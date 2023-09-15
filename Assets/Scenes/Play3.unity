@@ -1664,7 +1664,7 @@ GameObject:
   - component: {fileID: 748512021}
   - component: {fileID: 748512023}
   m_Layer: 0
-  m_Name: Potal_2
+  m_Name: Potal_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6487,7 +6487,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 748512017}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce42e77a96b60e840b3a3c30af07e947, type: 3}
+  m_Script: {fileID: 11500000, guid: ffabed950ece7574ba590dbd0cab4f48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &936038409
