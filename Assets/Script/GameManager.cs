@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using System.Net.NetworkInformation;
 
 public class GameManager : MonoBehaviour 
 {
@@ -15,10 +16,13 @@ public class GameManager : MonoBehaviour
     public int bulletCount; // 남은 총알 개수
     [Space(10f)]
 
+    [Header("기타 변수들")]
 
     [Header("오브젝트")]
     public Canvas canvas;
     public PlayerInformation playerInformation;
+    public Image[] Pins;
+    public Image[] HpBars;
     [Space(10f)]
 
 
@@ -34,7 +38,7 @@ public class GameManager : MonoBehaviour
     public RectTransform rhythmPosition_sub;
     public Image rhythmSpriteRenderer_left;
     public Image rhythmSpriteRenderer_right;
-    public float moveDistance = 245f; // 이동 거리
+    public float moveDistance = 300f; // 이동 거리
     public float iconDestroydeay = 1.2f; // 파괴 시간
     public float iconSpeed = 1.1f; 
     public float iconFadeDuration = 1f; // 페이드 인(서서히 나타나기) 시간
@@ -96,7 +100,7 @@ public class GameManager : MonoBehaviour
         RhythmImage_1.transform.SetParent(rhythmPosition_1.transform); // 리듬 위치의 자식으로 설정
         // 이미지 생성 후 애니메이션 및 페이드 인 설정
         RhythmImage_1.rectTransform.anchoredPosition = Vector2.zero;
-        RhythmImage_1.color = new Color(1f, 0f, 0f, 1f); // 초기 알파값 0, 빨간색으로 설정
+        RhythmImage_1.color = new Color(1f, 1f, 1f, 0.2f); // 초기 알파값 0, 빨간색으로 설정
         Tweener rhythmTween = RhythmImage_1.rectTransform.DOAnchorPosX(moveDistance, iconSpeed).SetEase(Ease.Linear);
         RhythmImage_1.DOFade(1f, iconFadeDuration); // 알파값 서서히 1로 변경
         StartCoroutine(DestroyAfterDelay(RhythmImage_1.gameObject, iconDestroydeay, startTime)); // 일정 시간 후에 이미지 파괴
@@ -104,7 +108,7 @@ public class GameManager : MonoBehaviour
         Image RhythmImage_sub = Instantiate(rhythmSpriteRenderer_left, rhythmPosition_sub.position, Quaternion.identity);
         RhythmImage_sub.transform.SetParent(rhythmPosition_sub.transform);
         RhythmImage_sub.rectTransform.anchoredPosition = Vector2.zero;
-        RhythmImage_sub.color = new Color(0f, 0f, 0f, 0f); // 초기 알파값 0, 빨간색으로 설정
+        RhythmImage_sub.color = new Color(1f, 0f, 0f, 0f); // 초기 알파값 0, 빨간색으로 설정
         Tweener rhythmTween_sub = RhythmImage_sub.rectTransform.DOAnchorPosX(moveDistance, iconSpeed - 0.1f).SetEase(Ease.Linear);
 
         rhythmTween_sub.OnComplete(() =>
@@ -117,7 +121,7 @@ public class GameManager : MonoBehaviour
         RhythmImage_2.transform.SetParent(rhythmPosition_2.transform); // 리듬 위치의 자식으로 설정
         // 이미지 생성 후 애니메이션 및 페이드 인 설정
         RhythmImage_2.rectTransform.anchoredPosition = Vector2.zero;
-        RhythmImage_2.color = new Color(1f, 0f, 0f, 1f); // 초기 알파값 0, 빨간색으로 설정
+        RhythmImage_2.color = new Color(1f, 1f, 1f, 0.2f); // 초기 알파값 0, 빨간색으로 설정
         RhythmImage_2.rectTransform.DOAnchorPosX(-moveDistance, iconSpeed).SetEase(Ease.Linear);
         RhythmImage_2.DOFade(1f, iconFadeDuration); // 알파값 서서히 1로 변경
 
@@ -141,7 +145,7 @@ public class GameManager : MonoBehaviour
 
     public void RhythmAnimationCompleted(Image rhythmImage)
     {
-        StartCoroutine(SetRhythmCorrectWithDelay(0.2f));  // @@@@@@@@@@@@@ 0.2초 동안만 판정을 옮게 함
+        StartCoroutine(SetRhythmCorrectWithDelay(0.15f));  // @@@@@@@@@@@@@ 0.2초 동안만 판정을 옮게 함
         //Debug.Log("RhythmImage_1 애니메이션 완료 및 함수 호출");
         // rhythmImage는 애니메이션이 완료된 이미지입니다.
     }
@@ -153,4 +157,39 @@ public class GameManager : MonoBehaviour
         rhythmCorrect = false; // 지정된 시간 후에 rhythmCorrect를 다시 false로 설정
     }
 
+
+    public void ActivateImage(int imageIndex)
+    {
+        for (int i = 0; i < Pins.Length; i++)
+        {
+            Pins[i].gameObject.SetActive(false);
+        }
+
+        if(imageIndex == 1 && !isReload)
+        {
+            Pins[0].gameObject.SetActive(true);
+        }
+        if (imageIndex == 2 && !isReload)
+        {
+            Pins[1].gameObject.SetActive(true);
+        }
+        if (imageIndex == 3 && !isReload)
+        {
+            Pins[2].gameObject.SetActive(true);
+        }
+    }
+
+    public void ActivateHpImage(int hp)
+    {
+
+        for (int i = 0; i < HpBars.Length; i++)
+        {
+            HpBars[i].gameObject.SetActive(false);
+        }
+        if(hp >= 0)
+        {
+            HpBars[hp].gameObject.SetActive(true);
+        }
+        
+    }
 }

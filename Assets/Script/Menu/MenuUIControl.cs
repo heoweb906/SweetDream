@@ -29,7 +29,9 @@ public class MenuUIControl : MonoBehaviour
         playerInformation.IsMenu = false;
         playerInformation.IsGame = true;
 
-        gameManager.isReload = false; 
+        gameManager.isReload = false;
+        gameManager.ActivateImage(playerInformation.WeponColor);
+        gameManager.ActivateHpImage(3);
     }
 
     public void SceneTurnTiming()

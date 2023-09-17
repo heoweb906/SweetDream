@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public PlayerInformation playerInformation;
 
     [Header("플레이어 정보")]
-    public int hp; // 플레이어 체력
+    public int hp = 4; // 플레이어 체력
     public int weaponNumber; // 1 = 빨강, 2 = 노랑, 3 = 파랑
     public float moveSpeed;  // 플레이어 스피드
     public float jumpForce; // 점프 힘
@@ -91,6 +91,7 @@ public class Player : MonoBehaviour
             weapon1.SetActive(false);
             weapon2.SetActive(false);
             weapon3.SetActive(false);
+            gameManager.ActivateImage(1);
         }
     }
 
@@ -209,10 +210,14 @@ public class Player : MonoBehaviour
 
     public void OnDamage(int dmg) // 데미지를 받았을 때의 함수, 몬스터들이 사용할 수 있도록 public으로 함
     {
-        hp -= dmg;
+        if(hp >= 1)
+        {
+            hp -= dmg;
+            gameManager.ActivateHpImage(hp - 1);
+        }
     }
 
-    void WeaponChange(int number)
+    void WeaponChange(int number) 
     {
         if (gameManager.rhythmCorrect && gameManager.isReload)
         {
@@ -249,11 +254,13 @@ public class Player : MonoBehaviour
                 gameManager.isReload = false;
                 gameManager.bulletCount = 10;
             }
+
+            gameManager.ActivateImage(number);
         }
     }
 
 
-    void WeaponChange_SceneChange(int number)  // 씬이 전환될 때 들고 있던 무기의 정보가 이어지도록 하기 위한 함수
+    void WeaponChange_SceneChange(int number)    // 씬이 전환될 때 들고 있던 무기의 정보가 이어지도록 하기 위한 함수
     {
         if (number == 1)
         {
@@ -286,6 +293,8 @@ public class Player : MonoBehaviour
             weapon2.SetActive(false);
             weapon3.SetActive(false);
         }
+
+        gameManager.ActivateImage(number);
     }
 
 

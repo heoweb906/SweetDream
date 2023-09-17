@@ -6,6 +6,7 @@ using UnityEngine;
 public class Monster : MonoBehaviour
 {
     public GameManager gameManager;
+    public StageManager stagemanager;
 
     [Header("몬스터 정보")]
     public int currentHealth;
@@ -20,6 +21,7 @@ public class Monster : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>(); // GameManager를 찾아서 할당
+        stagemanager = FindObjectOfType<StageManager>();
     }
 
     public void TakeDamage(int damageAmount)
@@ -42,6 +44,7 @@ public class Monster : MonoBehaviour
 
     private void Die()
     {
+        stagemanager.MonsterCount--;
         Destroy(gameObject);
     }
 }

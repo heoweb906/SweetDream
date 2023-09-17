@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MonsterBullet : MonoBehaviour
 {
-    public int damage = 20;
+    public int damage = 1;
     public float destroyDelay = 15f;
 
     private void Start()

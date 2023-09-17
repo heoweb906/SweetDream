@@ -38,12 +38,12 @@ public class TestButton : MonoBehaviour
         // #. 재장 전 중일 때 표시할 거
         if(gameManager.isReload)
         {
-            cruBulletCount.text = "- / -";
+            cruBulletCount.text = "X";
         }
         else
         {
             // #. 장전 중이 아닐 때는 최대 탄창의 수를 표시
-            cruBulletCount.text = gameManager.bulletCount.ToString() + " / 10";
+            cruBulletCount.text = gameManager.bulletCount.ToString();
         }
     }
 
