@@ -11,7 +11,7 @@ public class MenuUIControl : MonoBehaviour
     public GameManager gameManager;
     public PlayerInformation playerInformation;
 
-    public void Awake()
+    public void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         playerInformation = FindObjectOfType<PlayerInformation>();
