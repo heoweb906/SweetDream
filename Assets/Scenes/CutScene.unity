@@ -2370,10 +2370,10 @@ MonoBehaviour:
     StartOffset: {x: 0, y: 0}
   - CutRtf: {fileID: 1932946495}
     Duration: 1
-    StartOffset: {x: 0, y: 0}
+    StartOffset: {x: 300, y: 0}
   - CutRtf: {fileID: 1678129069}
     Duration: 1
-    StartOffset: {x: 0, y: 0}
+    StartOffset: {x: 0, y: 500}
   - CutRtf: {fileID: 1099584460}
     Duration: 1
     StartOffset: {x: 0, y: 0}

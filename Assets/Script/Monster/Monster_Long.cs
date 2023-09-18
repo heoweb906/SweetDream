@@ -24,6 +24,7 @@ public class Monster_Long : Monster
     {
         if (currentHealth <= 0 && !doDie)
         {
+            anim.SetBool("boolDie",true);
             doDie = true;
             anim.SetTrigger("doDie");
         }
