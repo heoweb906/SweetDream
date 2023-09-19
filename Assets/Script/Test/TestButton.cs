@@ -45,6 +45,11 @@ public class TestButton : MonoBehaviour
             // #. 장전 중이 아닐 때는 최대 탄창의 수를 표시
             cruBulletCount.text = gameManager.bulletCount.ToString();
         }
+
+        if (gameManager.isFever)
+        {
+            cruBulletCount.text = "무무한한대대";
+        }
     }
 
 

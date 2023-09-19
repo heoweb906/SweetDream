@@ -5,9 +5,11 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using System.Net.NetworkInformation;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour 
 {
+    public Player player;
     private static GameManager instance;
 
     [Header("총의 상태")]
@@ -15,8 +17,6 @@ public class GameManager : MonoBehaviour
     public bool isReload; // 지금 재장전 중인지
     public int bulletCount; // 남은 총알 개수
     [Space(10f)]
-
-    [Header("기타 변수들")]
 
     [Header("오브젝트")]
     public Canvas canvas;
@@ -28,8 +28,7 @@ public class GameManager : MonoBehaviour
 
     [Header("리듬 라인")]
     public int bpmCount; // 몬스터 패턴에서 사용할 Cnt 변수
-
-    public bool iconOn;
+    public bool iconOn; // 판정선을 생성하는 상태인지 아닌지 - 이게 True여야 아이콘이 생성됨
     public AudioSource soundManager; // 게임 배경음악
     public AudioSource soundTime; // 타이밍 맞추는 매트로놈
     public Image aim_Around;
@@ -42,7 +41,17 @@ public class GameManager : MonoBehaviour
     public float iconDestroydeay = 1.2f; // 파괴 시간
     public float iconSpeed = 1.1f; 
     public float iconFadeDuration = 1f; // 페이드 인(서서히 나타나기) 시간
+
+    private List<Image> rhythmImages = new List<Image>();
     [Space(10f)]
+
+
+    [Header("콤보 시스템")]
+    public bool isFever;
+    public float initialHeight = 600; // 콤보바 초기 높이
+    public Image comboBarImage;
+    [Space(10f)]
+
 
     [Header("테스트 중")]
     private float timeSinceLastCreation = 0.0f;
@@ -70,12 +79,10 @@ public class GameManager : MonoBehaviour
     {
         Invoke("SetStartGame", playerInformation.Jugde * 0.01f + 1.5f);  // 이걸로 판정을 맞출 거임
     }
-
     private void SetStartGame()
     {
         iconOn = true;
     }
-
 
     private void FixedUpdate()
     {   
@@ -88,6 +95,11 @@ public class GameManager : MonoBehaviour
                 CreateRhythmIcon();
                 timeSinceLastCreation = 0.0f; // 초기화해서 다음 호출까지 기다립니다.
             }
+        }
+
+        if(!isFever)
+        {
+            ComboBarBounceDown();
         }
     }
 
@@ -114,7 +126,7 @@ public class GameManager : MonoBehaviour
         RhythmImage_sub.transform.SetParent(rhythmPosition_sub.transform);
         RhythmImage_sub.rectTransform.anchoredPosition = Vector2.zero;
         RhythmImage_sub.color = new Color(1f, 0f, 0f, 0f); // 초기 알파값 0, 빨간색으로 설정
-        Tweener rhythmTween_sub = RhythmImage_sub.rectTransform.DOAnchorPosX(moveDistance, iconSpeed - 1f).SetEase(Ease.Linear);
+        Tweener rhythmTween_sub = RhythmImage_sub.rectTransform.DOAnchorPosX(moveDistance, iconSpeed - 0.1f).SetEase(Ease.Linear);
 
         rhythmTween_sub.OnComplete(() =>
         {
@@ -134,6 +146,12 @@ public class GameManager : MonoBehaviour
         RhythmImage_2.DOFade(1f, iconFadeDuration); // 알파값 서서히 1로 변경
 
         StartCoroutine(DestroyAfterDelay(RhythmImage_2.gameObject, iconDestroydeay, startTime)); // 일정 시간 후에 이미지 파괴
+
+
+
+        rhythmImages.Add(RhythmImage_1);
+        rhythmImages.Add(RhythmImage_sub);
+        rhythmImages.Add(RhythmImage_2);
     }
 
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay, float startTime)
@@ -145,8 +163,14 @@ public class GameManager : MonoBehaviour
             float endTime = Time.time;
             float elapsedTime = endTime - startTime;
 
-            //Debug.Log("이미지가 생성된 후 " + elapsedTime + "초 뒤에 사라짐");
+            // 이미지를 리스트에서 제거
+            Image imageComponent = obj.GetComponent<Image>();
+            if (imageComponent != null && rhythmImages.Contains(imageComponent))
+            {
+                rhythmImages.Remove(imageComponent);
+            }
 
+            // 이미지를 파괴
             Destroy(obj);
         }
     }
@@ -200,4 +224,67 @@ public class GameManager : MonoBehaviour
         }
         
     }
+
+
+
+
+    public void ComboBarBounceDown() // 지속적으로 콤보바의 수치를 낮춰줄 함수
+    {
+        float newHeight = (int)(comboBarImage.rectTransform.sizeDelta.y - 0.1f);
+        comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
+    }
+
+    public void ComboBarDown(int downNumber)
+    {
+        float newHeight = comboBarImage.rectTransform.sizeDelta.y - downNumber;
+        comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
+    }
+
+    public void ComboBarBounceUp() // 옳은 판정 시에 콤보바 게이지의 높이를 올리는 함수
+    {
+        float currentHeight = comboBarImage.rectTransform.sizeDelta.y;
+        float newHeight = currentHeight + 200; // 높이를 더함
+
+        if (newHeight < 600)
+        {
+            comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
+        }
+        else if (newHeight >= 600)
+        {
+            comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, 600);
+            StartCoroutine(ActivateFeverMode());
+
+            player = FindObjectOfType<Player>();
+            if (player != null)
+            {
+                player.FeverOn();
+            }
+        }
+    }
+    private IEnumerator ActivateFeverMode()
+    {
+        isFever = true;
+        Pins[0].gameObject.SetActive(true);
+        Pins[1].gameObject.SetActive(true);
+        Pins[2].gameObject.SetActive(true);
+        foreach (var rhythmImage in rhythmImages)
+        {
+            Destroy(rhythmImage.gameObject);
+        }
+        rhythmImages.Clear(); // 리스트 비우기
+        iconOn = false;
+
+        yield return new WaitForSeconds(10f);
+
+        ComboBarDown(500);
+        player = FindObjectOfType<Player>();
+
+        if (player != null)
+        {
+            player.FeverOff();
+        }
+        isFever = false;
+        iconOn = true;
+    }
+
 }

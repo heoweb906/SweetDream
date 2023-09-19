@@ -36,19 +36,21 @@ public class Monster_Bear : Monster
             anim.SetTrigger("doDie");
         }
 
-        if(!isChase)
+        if (!isChase)
         {
+            anim.SetBool("isWalk",false);
             nav.speed = 0;
             nav.angularSpeed = 0;
         }
         else
         {
-            nav.speed = 2;
+            anim.SetBool("isWalk", true);
+            nav.speed = 1.2f;
             nav.angularSpeed = 250;
         }
     }
 
-    void FixedUpdate() 
+    void FixedUpdate()
     {
         Targetting();
         FreezeVelocity();
@@ -57,8 +59,8 @@ public class Monster_Bear : Monster
 
     void Targetting()
     {
-        float targetRadius = 1f;
-        float targetRange = 1f;
+        float targetRadius = 1.6f;
+        float targetRange = 1.6f;
 
         RaycastHit[] rayHits =
             Physics.SphereCastAll(transform.position, targetRadius, transform.forward, targetRange,

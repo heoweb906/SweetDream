@@ -1,3 +1,4 @@
+using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
     public GameObject weapon1;
     public GameObject weapon2;
     public GameObject weapon3;
+    public GameObject weapon4_Gatling;
     [Space(10f)]
 
 
@@ -35,6 +37,9 @@ public class Player : MonoBehaviour
     public float vAxis; // 이동 시 수직 값을 위한 변수
     public float turnSpeed; // 회전 속도
     public float attackRange = 50000.0f; // 공격 범위
+
+    private float timeSinceLastAttack = 0f;  // FeverAttack
+    public float attackInterval = 0.5f; // everAttack Ray를 발사하는 주기
     [Space(10f)]
 
 
@@ -70,7 +75,15 @@ public class Player : MonoBehaviour
     private void Start()
     {
         CamLock(); // 게임 시작 시 카메라 락
-        WeaponChange_SceneChange(playerInformation.WeponColor); // 씬이 전환될 때 들고 있던 무기의 정보가 이어지도록 무기 교체 함수 1회 실행
+        if(!(gameManager.isFever))
+        {
+            WeaponChange_SceneChange(playerInformation.WeponColor); // 씬이 전환될 때 들고 있던 무기의 정보가 이어지도록 무기 교체 함수 1회 실행
+        }
+        else if(gameManager.isFever)
+        {
+            FeverOn();
+            weaponNumber = playerInformation.WeponColor;
+        }
     }
 
 
@@ -78,7 +91,24 @@ public class Player : MonoBehaviour
     {
         GetInput();
         Move();
-        Attack();
+        
+        if(!(gameManager.isFever))
+        {
+            Attack();
+        }
+        else if(gameManager.isFever)
+        {
+            if (Input.GetButton("Fire1"))
+            {
+                timeSinceLastAttack += Time.deltaTime;
+
+                if (timeSinceLastAttack >= attackInterval)
+                {
+                    FeverAttack();
+                    timeSinceLastAttack = 0f; 
+                }
+            }
+        }
     }
 
 
@@ -178,29 +208,55 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        if (Input.GetButtonDown("Fire1") && gameManager.rhythmCorrect && !(gameManager.isReload) && gameManager.bulletCount > 0)
+        if (Input.GetButtonDown("Fire1") && gameManager.rhythmCorrect)
         {
-            Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
-            RaycastHit hit;
-
-            bool hasHit = Physics.Raycast(ray, out hit, attackRange);
-
-            Debug.DrawRay(ray.origin, ray.direction * attackRange, hasHit ? Color.red : Color.green, 0.1f); // 레이 시각화
-
-            if (hasHit && hit.collider.CompareTag("Monster"))
+            if (!(gameManager.isReload) && gameManager.bulletCount > 0)
             {
-                Monster monster = hit.collider.GetComponent<Monster>();
-                if (monster != null)
-                {
-                    if(monster.monsterColor == weaponNumber)
-                    {
-                        gameManager.bulletCount--;
+                Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
+                RaycastHit hit;
+                bool hasHit = Physics.Raycast(ray, out hit, attackRange);
 
-                        //soundGun.Play();
-                        monster.TakeDamage(attackDamage);
+                Debug.DrawRay(ray.origin, ray.direction * attackRange, hasHit ? Color.red : Color.green, 0.1f); // 레이 시각화
+                gameManager.bulletCount--;
+
+                if (hasHit && hit.collider.CompareTag("Monster"))
+                {
+                    Monster monster = hit.collider.GetComponent<Monster>();
+                    if (monster != null)
+                    {
+                        if (monster.monsterColor == weaponNumber)
+                        {
+
+                            monster.TakeDamage(attackDamage);
+                            gameManager.ComboBarBounceUp();
+                            //soundGun.Play(); // 아직 소리 설정은 안함
+                        }
                     }
-                    
                 }
+            }
+        }
+        else if(Input.GetButtonDown("Fire1") && !(gameManager.rhythmCorrect))   // 만약 틀린 타이밍에 공격하면
+        {
+            gameManager.ComboBarDown(20);
+        }
+    }
+
+    private void FeverAttack()
+    {
+        Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
+        RaycastHit hit;
+        bool hasHit = Physics.Raycast(ray, out hit, attackRange);
+
+        Debug.DrawRay(ray.origin, ray.direction * attackRange, hasHit ? Color.red : Color.green, 0.1f); // 레이 시각화
+        gameManager.bulletCount--;
+
+        if (hasHit && hit.collider.CompareTag("Monster"))
+        {
+            Monster monster = hit.collider.GetComponent<Monster>();
+            if (monster != null)
+            {
+                monster.TakeDamage(attackDamage);
+                //soundGun.Play(); // 아직 소리 설정은 안함
             }
         }
     }
@@ -217,7 +273,24 @@ public class Player : MonoBehaviour
         }
     }
 
-    void WeaponChange(int number) 
+    public void FeverOn()
+    {
+        weapon1.SetActive(false);
+        weapon2.SetActive(false);
+        weapon3.SetActive(false);
+        weapon4_Gatling.SetActive(true);
+        attackDamage = 3;
+    }
+
+    public void FeverOff()
+    {
+        weapon4_Gatling.SetActive(false);
+        WeaponChange_SceneChange(weaponNumber);
+        gameManager.bulletCount = 10;
+        attackDamage = 10;
+    }
+
+    public void WeaponChange(int number) 
     {
         if (gameManager.rhythmCorrect && gameManager.isReload)
         {
@@ -259,8 +332,7 @@ public class Player : MonoBehaviour
         }
     }
 
-
-    void WeaponChange_SceneChange(int number)    // 씬이 전환될 때 들고 있던 무기의 정보가 이어지도록 하기 위한 함수
+    public void WeaponChange_SceneChange(int number)    // 씬이 전환될 때 들고 있던 무기의 정보가 이어지도록 하기 위한 함수
     {
         if (number == 1)
         {
