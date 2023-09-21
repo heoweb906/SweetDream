@@ -8,7 +8,6 @@ public class TestButton : MonoBehaviour
 {
     public GameManager gameManager;
     public PlayerInformation playerInformation;
-
     public TMP_Text cruBulletCount;
 
     public void Awake()

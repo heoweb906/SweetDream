@@ -11,8 +11,8 @@ public class PlayerInformation : MonoBehaviour
     [SerializeField]private bool isGame;  // 메뉴화면인지 게임화면인지 구분하는 용도로 만든 bool 값임
     [SerializeField]private bool isMenu;  // 그 외의 용도로는 절대 사용하지 말 것
 
-    [SerializeField]private int weponColor;
-    [SerializeField] private int jugde;
+    [SerializeField]private int weponColor;  // 플레이어의 무기 색상 정보 저장, 씬 전환 or 피버가 종료되었을 때 무기의 정보를 유지하기 위해서
+    [SerializeField] private int jugde;  // 게임 시작 시 판정선의 "최초 생성" 딜레이를 결정하는 변수 - 이걸로 플레이어 개인의 박자를 맞출 거임
 
 
     // 프로퍼티를 통한 값 액세스

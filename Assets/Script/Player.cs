@@ -9,6 +9,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // 죽거나 메인화면으로 나갈 때 피버타임이 끝나도록 수정해야 함
+
+
     public GameManager gameManager;
     public PlayerInformation playerInformation;
 
@@ -24,12 +27,12 @@ public class Player : MonoBehaviour
 
 
     [Header("오브젝트")]
+    public GameObject weapon_main;
     public GameObject weapon1;
     public GameObject weapon2;
     public GameObject weapon3;
     public GameObject weapon4_Gatling;
     [Space(10f)]
-
 
 
     [Header("조작 관련 변수")]
@@ -275,6 +278,7 @@ public class Player : MonoBehaviour
 
     public void FeverOn()
     {
+        weapon_main.SetActive(false);
         weapon1.SetActive(false);
         weapon2.SetActive(false);
         weapon3.SetActive(false);
@@ -284,6 +288,7 @@ public class Player : MonoBehaviour
 
     public void FeverOff()
     {
+        weapon_main.SetActive(true);
         weapon4_Gatling.SetActive(false);
         WeaponChange_SceneChange(weaponNumber);
         gameManager.bulletCount = 10;

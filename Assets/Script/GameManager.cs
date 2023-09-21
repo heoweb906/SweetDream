@@ -147,8 +147,7 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(DestroyAfterDelay(RhythmImage_2.gameObject, iconDestroydeay, startTime)); // 일정 시간 후에 이미지 파괴
 
-
-
+        // #. 생성된 판정선을 리스트에 담음
         rhythmImages.Add(RhythmImage_1);
         rhythmImages.Add(RhythmImage_sub);
         rhythmImages.Add(RhythmImage_2);
@@ -192,7 +191,7 @@ public class GameManager : MonoBehaviour
 
     public void ActivateImage(int imageIndex)
     {
-        for (int i = 0; i < Pins.Length; i++)
+        for (int i = 0; i < Pins.Length; i++) // UI 상에서 어떤 무기를 쓰고 있는지 바늘로 찔러서 알려줌
         {
             Pins[i].gameObject.SetActive(false);
         }
@@ -211,7 +210,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ActivateHpImage(int hp)
+
+    public void ActivateHpImage(int hp) // hp바 업데이트
     {
 
         for (int i = 0; i < HpBars.Length; i++)
@@ -234,7 +234,7 @@ public class GameManager : MonoBehaviour
         comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
     }
 
-    public void ComboBarDown(int downNumber)
+    public void ComboBarDown(int downNumber) // 판정에 실패할 시 게이지를 낮춤
     {
         float newHeight = comboBarImage.rectTransform.sizeDelta.y - downNumber;
         comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
@@ -261,6 +261,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     private IEnumerator ActivateFeverMode()
     {
         isFever = true;

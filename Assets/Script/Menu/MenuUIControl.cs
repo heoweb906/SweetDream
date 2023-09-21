@@ -31,6 +31,9 @@ public class MenuUIControl : MonoBehaviour
 
         gameManager.isReload = false;
         gameManager.ActivateImage(playerInformation.WeponColor);
+
+
+
         gameManager.ActivateHpImage(3);
     }
 

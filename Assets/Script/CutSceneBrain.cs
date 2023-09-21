@@ -2,12 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
 public class CutSceneBrain : MonoBehaviour
 {
+    [Header("아무키나 눌러 시작 관련 변수들")]
+    public TMP_Text anyToText;
+    public bool bool_isBlinking = false;
+    public bool bool_PressButton = false;
+    
+    private float blinkInterval = 0.5f; // 깜박이는 주기 1
+    private float asdasdBlinkInterval = 0.2f; // 깜박이는 주기 2
+ 
     [SerializeField] UnityEvent enterEvent;
     [SerializeField] UnityEvent exitEvent;
 
@@ -20,6 +29,19 @@ public class CutSceneBrain : MonoBehaviour
     WaitForSeconds nextCutDelayWFS;
 
     private bool isExiting = false;
+
+
+
+
+
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //  ExitCutScene(); 함수를 이용해서 자연스럽게 넘어가도록 해야함
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
+
+
 
     void Awake()
     {
@@ -34,8 +56,14 @@ public class CutSceneBrain : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.anyKeyDown)
+        {
             TryNextCut();
+            if(bool_isBlinking)
+            {
+                ExitCutScene();
+            }
+        }  
         if (Input.GetKeyDown(KeyCode.Escape) && !isExiting) // isExiting 변수를 확인하여 중복으로 ExitCutScene() 호출 방지
             ExitCutScene();
     }
@@ -53,17 +81,18 @@ public class CutSceneBrain : MonoBehaviour
         }
     }
 
+
+
     [ContextMenu("ExitCutScene")]
     public void ExitCutScene()
     {
         if (CutSceneShowing && !isExiting) // isExiting 변수를 확인하여 중복으로 처리되지 않도록 함
         {
             isExiting = true; // 출구 상태로 설정
-
-            // 시간 지연 없이 바로 다음 씬으로 이동
-            SceneManager.LoadScene("Menu");
+            SceneManager.LoadScene("Loading_Menu");
         }
     }
+
 
     [ContextMenu("TryNextCut")]
     public void TryNextCut()
@@ -92,7 +121,11 @@ public class CutSceneBrain : MonoBehaviour
                 StopCoroutine(CutShowing_C);
 
             //현재 컷 보여주기
-            cutInfos[cutIndex].DoEnter();
+            cutInfos[cutIndex].DoEnter();  
+            if (cutIndex == 9)        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 마지막 컷신 순서
+            {
+                StartCoroutine(DelayedBlinkText());
+            }
             CutShowing_C = CutShowingc();
             StartCoroutine(CutShowing_C);
         }
@@ -112,6 +145,34 @@ public class CutSceneBrain : MonoBehaviour
         yield return nextCutDelayWFS;
         ShowNextCut();
     }
+
+    private IEnumerator DelayedBlinkText()
+    {
+        yield return new WaitForSeconds(1.5f);
+        StartCoroutine(BlinkText());
+    }
+
+    private IEnumerator BlinkText()
+    {
+        bool_isBlinking = true;
+
+        while (true)
+        {
+            // 현재 주기에 따라 깜박거림
+            anyToText.enabled = !anyToText.enabled;
+
+            // asdasd 값에 따라 주기 변경
+            if (bool_PressButton)
+            {
+                yield return new WaitForSeconds(asdasdBlinkInterval);
+            }
+            else
+            {
+                yield return new WaitForSeconds(blinkInterval);
+            }
+        }
+    }
+
 }
 
 [System.Serializable]
