@@ -10102,8 +10102,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  stagemanager: {fileID: 0}
   currentHealth: 5
-  monsterColor: 3
+  monsterColor: 1
   doDie: 0
   renderer: {fileID: 1334077089138324371}
   originalColor: {r: 0, g: 0.25339818, b: 1, a: 0}

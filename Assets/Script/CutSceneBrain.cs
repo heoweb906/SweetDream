@@ -16,7 +16,14 @@ public class CutSceneBrain : MonoBehaviour
     
     private float blinkInterval = 0.5f; // 깜박이는 주기 1
     private float asdasdBlinkInterval = 0.2f; // 깜박이는 주기 2
- 
+
+
+    [Header("페이드 아웃 관련 함수 들")]
+    public Image image_Fade;
+    float time = 0f;
+    float F_time = 1.5f;
+
+
     [SerializeField] UnityEvent enterEvent;
     [SerializeField] UnityEvent exitEvent;
 
@@ -29,19 +36,6 @@ public class CutSceneBrain : MonoBehaviour
     WaitForSeconds nextCutDelayWFS;
 
     private bool isExiting = false;
-
-
-
-
-
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    //  ExitCutScene(); 함수를 이용해서 자연스럽게 넘어가도록 해야함
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
-
-
-
 
     void Awake()
     {
@@ -61,6 +55,7 @@ public class CutSceneBrain : MonoBehaviour
             TryNextCut();
             if(bool_isBlinking)
             {
+                bool_PressButton = true;
                 ExitCutScene();
             }
         }  
@@ -89,7 +84,8 @@ public class CutSceneBrain : MonoBehaviour
         if (CutSceneShowing && !isExiting) // isExiting 변수를 확인하여 중복으로 처리되지 않도록 함
         {
             isExiting = true; // 출구 상태로 설정
-            SceneManager.LoadScene("Loading_Menu");
+            Fade();
+            
         }
     }
 
@@ -171,6 +167,28 @@ public class CutSceneBrain : MonoBehaviour
                 yield return new WaitForSeconds(blinkInterval);
             }
         }
+    }
+
+
+    public void Fade() // 페이드 아웃 함수
+    {
+        StartCoroutine(FadeOut());
+    }
+
+    IEnumerator FadeOut()
+    {
+        image_Fade.gameObject.SetActive(true);
+        Color alpha = image_Fade.color;
+        while (alpha.a < 1f)
+        {
+            time += Time.deltaTime / F_time;
+            alpha.a = Mathf.Lerp(0, 1, time);
+            image_Fade.color = alpha;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1.0f);
+        SceneManager.LoadScene("Loading_Menu");
     }
 
 }

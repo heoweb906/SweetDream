@@ -11,7 +11,6 @@ public class Player : MonoBehaviour
 {
     // 죽거나 메인화면으로 나갈 때 피버타임이 끝나도록 수정해야 함
 
-
     public GameManager gameManager;
     public PlayerInformation playerInformation;
 
@@ -78,7 +77,8 @@ public class Player : MonoBehaviour
     private void Start()
     {
         CamLock(); // 게임 시작 시 카메라 락
-        if(!(gameManager.isFever))
+
+        if (!(gameManager.isFever))
         {
             WeaponChange_SceneChange(playerInformation.WeponColor); // 씬이 전환될 때 들고 있던 무기의 정보가 이어지도록 무기 교체 함수 1회 실행
         }
@@ -229,7 +229,6 @@ public class Player : MonoBehaviour
                     {
                         if (monster.monsterColor == weaponNumber)
                         {
-
                             monster.TakeDamage(attackDamage);
                             gameManager.ComboBarBounceUp();
                             //soundGun.Play(); // 아직 소리 설정은 안함

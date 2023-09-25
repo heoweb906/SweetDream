@@ -222,7 +222,7 @@ MonoBehaviour:
   gameManager: {fileID: 0}
   stagemanager: {fileID: 0}
   currentHealth: 2
-  monsterColor: 3
+  monsterColor: 1
   doDie: 0
   renderer: {fileID: 6178172483440183442}
   originalColor: {r: 0, g: 0.27395344, b: 1, a: 0}

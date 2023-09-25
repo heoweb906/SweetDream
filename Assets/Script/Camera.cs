@@ -5,11 +5,26 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Camera : MonoBehaviour
 {
+    public PlayerInformation playerInformation;
+
     public Transform target; // 플레이어의 Transform을 저장할 변수
     public Vector3 offset;   // 카메라와 플레이어 사이의 거리
 
-    public float turnSpeed = 4.0f; // 마우스 회전 속도    
+    public float turnSpeed; // 마우스 회전 속도    
     private float xRotate = 0.0f; // 내부 사용할 X축 회전량은 별도 정의 ( 카메라 위 아래 방향 )
+
+
+    private void Start()
+    {
+        SetMouseSpeed();
+    }
+
+    public void SetMouseSpeed()
+    {
+        playerInformation = FindObjectOfType<PlayerInformation>();
+        turnSpeed = playerInformation.MouseSpeed * 4f; // 마우스 감도 값은 0~1로 관리하고 있음, 실제 적용시에만 4를 곱해줌
+    }
+
 
     void Update()
     {
@@ -34,5 +49,7 @@ public class Camera : MonoBehaviour
 
         // 플레이어 오브젝트의 회전도 카메라와 같게 설정 (카메라 회전값을 플레이어에 적용)
         target.rotation = Quaternion.Euler(0, yRotate, 0);
+
+
     }
 }

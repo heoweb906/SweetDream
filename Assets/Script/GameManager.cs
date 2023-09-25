@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     public float iconSpeed = 1.1f; 
     public float iconFadeDuration = 1f; // 페이드 인(서서히 나타나기) 시간
 
+
     private List<Image> rhythmImages = new List<Image>();
     [Space(10f)]
 
@@ -75,6 +76,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     public void GameStart()
     {
         Invoke("SetStartGame", playerInformation.Jugde * 0.01f + 1.5f);  // 이걸로 판정을 맞출 거임
@@ -83,6 +85,13 @@ public class GameManager : MonoBehaviour
     {
         iconOn = true;
     }
+
+    public void SetVolume()
+    {
+        soundManager.volume = playerInformation.VolumeBGM;
+        soundTime.volume = playerInformation.VolumeEffect;
+    }
+
 
     private void FixedUpdate()
     {   
@@ -102,6 +111,10 @@ public class GameManager : MonoBehaviour
             ComboBarBounceDown();
         }
     }
+
+
+
+
 
 
     private void CreateRhythmIcon()
@@ -210,7 +223,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void ActivateHpImage(int hp) // hp바 업데이트
     {
 
@@ -224,8 +236,6 @@ public class GameManager : MonoBehaviour
         }
         
     }
-
-
 
 
     public void ComboBarBounceDown() // 지속적으로 콤보바의 수치를 낮춰줄 함수
@@ -243,7 +253,7 @@ public class GameManager : MonoBehaviour
     public void ComboBarBounceUp() // 옳은 판정 시에 콤보바 게이지의 높이를 올리는 함수
     {
         float currentHeight = comboBarImage.rectTransform.sizeDelta.y;
-        float newHeight = currentHeight + 200; // 높이를 더함
+        float newHeight = currentHeight + 100; // 높이를 더함
 
         if (newHeight < 600)
         {
@@ -275,11 +285,17 @@ public class GameManager : MonoBehaviour
         rhythmImages.Clear(); // 리스트 비우기
         iconOn = false;
 
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(5f);
 
+        if (isFever)
+        {
+            SubFever();
+        }
+    }
+    public void SubFever()
+    {
         ComboBarDown(500);
         player = FindObjectOfType<Player>();
-
         if (player != null)
         {
             player.FeverOff();
@@ -287,5 +303,4 @@ public class GameManager : MonoBehaviour
         isFever = false;
         iconOn = true;
     }
-
 }
