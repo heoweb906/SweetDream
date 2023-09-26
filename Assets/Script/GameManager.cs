@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     public Image rhythmSpriteRenderer_right;
     public float moveDistance = 250f; // 이동 거리
     public float iconDestroydeay = 1.2f; // 파괴 시간
-    public float iconSpeed = 1.1f; 
+    public float iconSpeed = 1.0f; 
     public float iconFadeDuration = 1f; // 페이드 인(서서히 나타나기) 시간
 
 
@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
         RhythmImage_sub.transform.SetParent(rhythmPosition_sub.transform);
         RhythmImage_sub.rectTransform.anchoredPosition = Vector2.zero;
         RhythmImage_sub.color = new Color(1f, 0f, 0f, 0f); // 초기 알파값 0, 빨간색으로 설정
-        Tweener rhythmTween_sub = RhythmImage_sub.rectTransform.DOAnchorPosX(moveDistance, iconSpeed - 0.1f).SetEase(Ease.Linear);
+        Tweener rhythmTween_sub = RhythmImage_sub.rectTransform.DOAnchorPosX(moveDistance, iconSpeed - 0.05f).SetEase(Ease.Linear);
 
         rhythmTween_sub.OnComplete(() =>
         {
@@ -252,7 +252,7 @@ public class GameManager : MonoBehaviour
     public void ComboBarBounceUp() // 옳은 판정 시에 콤보바 게이지의 높이를 올리는 함수
     {
         float currentHeight = comboBarImage.rectTransform.sizeDelta.y;
-        float newHeight = currentHeight + 100; // 높이를 더함
+        float newHeight = currentHeight + 20; // 높이를 더함
 
         if (newHeight < 600)
         {

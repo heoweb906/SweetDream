@@ -6,10 +6,16 @@ using System.IO.Compression;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using MoreMountains.Feedbacks;
 
 public class Player : MonoBehaviour
 {
     // 죽거나 메인화면으로 나갈 때 피버타임이 끝나도록 수정해야 함
+
+    public MMF_Player mmfPlayer_Camera;
+    
+
+
 
     public GameManager gameManager;
     public PlayerInformation playerInformation;
@@ -46,8 +52,14 @@ public class Player : MonoBehaviour
 
 
     [Header("사운드")]
-    public AudioSource soundGun; // 게임 배경음악
-    public AudioSource soundRoll; // 타이밍 맞추는 매트로놈
+    public AudioSource soundGun; // 총소리
+    public AudioSource soundGun_Fail; // 리듬 맞추기 실패 공격
+    public AudioSource soundReload_In; // 장전 소리 (탄창 장착)
+    public AudioSource soundReload_Out; // 장전 소리 (탄창 장착)
+    public AudioSource soundMiniGun; // 구르기 소리
+    public AudioSource soundRoll; // 구르기 소리
+    
+
 
 
     // #. 플레이어 키 입력
@@ -74,9 +86,11 @@ public class Player : MonoBehaviour
         CamLock();
         rigid = GetComponent<Rigidbody>();
     }
+
     private void Start()
     {
         CamLock(); // 게임 시작 시 카메라 락
+        SetEffectSound(); // 환경 설정에 맞도록 효과음 사운드 조절;
 
         if (!(gameManager.isFever))
         {
@@ -88,6 +102,9 @@ public class Player : MonoBehaviour
             weaponNumber = playerInformation.WeponColor;
         }
     }
+
+   
+
 
 
     private void Update()
@@ -125,6 +142,8 @@ public class Player : MonoBehaviour
             weapon2.SetActive(false);
             weapon3.SetActive(false);
             gameManager.ActivateImage(1);
+
+            soundReload_Out.Play();
         }
     }
 
@@ -189,6 +208,8 @@ public class Player : MonoBehaviour
     {
         // 구르기 동안 이동 속도를 증가시키고, 방향은 현재 이동 방향으로 설정
         soundRoll.Play();
+        mmfPlayer_Camera?.PlayFeedbacks();
+
         float originalMoveSpeed = moveSpeed;
         moveSpeed = rollSpeed;
         Vector3 rollDirection = moveVec;
@@ -231,15 +252,17 @@ public class Player : MonoBehaviour
                         {
                             monster.TakeDamage(attackDamage);
                             gameManager.ComboBarBounceUp();
-                            //soundGun.Play(); // 아직 소리 설정은 안함
+                            
                         }
                     }
                 }
+                soundGun.Play(); 
             }
         }
         else if(Input.GetButtonDown("Fire1") && !(gameManager.rhythmCorrect))   // 만약 틀린 타이밍에 공격하면
         {
             gameManager.ComboBarDown(20);
+            soundGun_Fail.Play();
         }
     }
 
@@ -258,9 +281,10 @@ public class Player : MonoBehaviour
             if (monster != null)
             {
                 monster.TakeDamage(attackDamage);
-                //soundGun.Play(); // 아직 소리 설정은 안함
             }
         }
+
+        soundMiniGun.Play();
     }
 
 
@@ -333,6 +357,7 @@ public class Player : MonoBehaviour
             }
 
             gameManager.ActivateImage(number);
+            soundReload_In.Play();
         }
     }
 
@@ -371,6 +396,16 @@ public class Player : MonoBehaviour
         }
 
         gameManager.ActivateImage(number);
+    }
+
+    void SetEffectSound()
+    {
+        soundGun.volume = playerInformation.VolumeEffect;
+        soundGun_Fail.volume = playerInformation.VolumeEffect;
+        soundReload_In.volume = playerInformation.VolumeEffect;
+        soundReload_Out.volume = playerInformation.VolumeEffect;
+        soundMiniGun.volume = playerInformation.VolumeEffect;
+        soundRoll.volume = playerInformation.VolumeEffect;
     }
 
 
