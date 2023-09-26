@@ -35,7 +35,7 @@ public class Monster : MonoBehaviour
         renderer.material.color = Color.black;
 
         // 맞을 때마다 위로 이동하게 해놨음 테스트용임
-        transform.position = originalPosition + Vector3.up * 0.2f; // 원래 위치에서 약간 위로 이동
+        transform.position = originalPosition + Vector3.up * 0.1f; // 원래 위치에서 약간 위로 이동
         originalPosition = transform.position;
 
         if (currentHealth <= 0)

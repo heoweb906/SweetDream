@@ -181,7 +181,6 @@ public class GameManager : MonoBehaviour
             {
                 rhythmImages.Remove(imageComponent);
             }
-
             // 이미지를 파괴
             Destroy(obj);
         }
