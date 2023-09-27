@@ -53,13 +53,9 @@ public class MenuUIControl : MonoBehaviour
         playerInformation.IsMenu = false;
         playerInformation.IsGame = true;
 
-        playerInformation.MouseSpeed = mouseFloat;
-        playerInformation.VolumeBGM = volumeBGM;
-        playerInformation.VolumeEffect = volumeEffect;
-
         gameManager.isReload = false;
 
-        if(gameManager.isFever)
+        if(gameManager.isFever) // @@@@@@@@@@@@@@@ 임시로 피버를 끝나게 해놓은 거임
         {
             gameManager.SubFever();
         }
@@ -67,7 +63,7 @@ public class MenuUIControl : MonoBehaviour
 
         gameManager.ActivateImage(playerInformation.WeponColor); // 무기 정보에 맞게 바늘 UI 업데이트
         gameManager.ActivateHpImage(3); // 체력바 활성화
-        gameManager.SetVolume();
+        gameManager.SetVolume(); // 슬라이더 조절에서 하지만 혹시 모르니까......
 
         SceneManager.LoadScene("Play1"); // "YourSceneName"은 이동하고자 하는 씬의 이름으로 바꿔주세요.
     } 
@@ -82,16 +78,21 @@ public class MenuUIControl : MonoBehaviour
     {
         // 소수점 2자리까지 반올림하여 mouseFloat에 할당
         mouseFloat = Mathf.Round(value * 100) / 100;
+        playerInformation.MouseSpeed = mouseFloat;
     }
 
     public void OnBGM_SoundSensitivityChanged(float value) // 배경음악 크기 조절 슬라이더 함수
     {
         volumeBGM = Mathf.Round(value * 100) / 100;
+        playerInformation.VolumeBGM = volumeBGM;
+        gameManager.SetVolume();
     }
 
     public void OnEffect_SoundSensitivityChanged(float value) // 효과음 크기 조절 슬라이더 함수
     {
         volumeEffect = Mathf.Round(value * 100) / 100;
+        playerInformation.VolumeEffect = volumeEffect;
+        gameManager.SetVolume();
     }
 
     public void OnOffSettingPanel()

@@ -14,7 +14,7 @@ public class CutSceneBrain : MonoBehaviour
     public bool bool_isBlinking = false;
     public bool bool_PressButton = false;
     
-    private float blinkInterval = 0.5f; // 깜박이는 주기 1
+    private float blinkInterval = 0.4f; // 깜박이는 주기 1
     private float asdasdBlinkInterval = 0.2f; // 깜박이는 주기 2
 
 

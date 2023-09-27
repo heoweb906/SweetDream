@@ -7,18 +7,15 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using MoreMountains.Feedbacks;
+using System.Security.Cryptography;
 
 public class Player : MonoBehaviour
 {
     // 죽거나 메인화면으로 나갈 때 피버타임이 끝나도록 수정해야 함
 
-    public MMF_Player mmfPlayer_Camera;
-    
-
-
-
     public GameManager gameManager;
     public PlayerInformation playerInformation;
+    public UI_InGame ingame_UI;
 
     [Header("플레이어 정보")]
     public int hp = 4; // 플레이어 체력
@@ -58,7 +55,13 @@ public class Player : MonoBehaviour
     public AudioSource soundReload_Out; // 장전 소리 (탄창 장착)
     public AudioSource soundMiniGun; // 구르기 소리
     public AudioSource soundRoll; // 구르기 소리
-    
+
+
+    [Header("FEEL 관련")]
+    public MMF_Player mmfPlayer_Camera;
+    public MMF_Player mmfPlayer_OnDamage;
+    // mmfPlayer_Camera?.PlayFeedbacks();
+
 
 
 
@@ -90,7 +93,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         CamLock(); // 게임 시작 시 카메라 락
-        SetEffectSound(); // 환경 설정에 맞도록 효과음 사운드 조절;
+        SetPlayerSound(); // 환경 설정에 맞도록 효과음 사운드 조절;
 
         if (!(gameManager.isFever))
         {
@@ -176,6 +179,11 @@ public class Player : MonoBehaviour
         {
             key_weapon = 3;
             WeaponChange(key_weapon);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ingame_UI.OnOffSettingPanel();
         }
 
     }
@@ -296,6 +304,7 @@ public class Player : MonoBehaviour
         {
             hp -= dmg;
             gameManager.ActivateHpImage(hp - 1);
+            mmfPlayer_OnDamage?.PlayFeedbacks();
         }
     }
 
@@ -398,7 +407,7 @@ public class Player : MonoBehaviour
         gameManager.ActivateImage(number);
     }
 
-    void SetEffectSound()
+    public void SetPlayerSound()
     {
         soundGun.volume = playerInformation.VolumeEffect;
         soundGun_Fail.volume = playerInformation.VolumeEffect;
@@ -410,10 +419,15 @@ public class Player : MonoBehaviour
 
 
     #region camLock
-    private void CamLock() // 마우스 커서를 숨기는 함수
+    public void CamLock() // 마우스 커서를 숨기는 함수
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+    public void CamUnlock()
+    {
+        Cursor.visible = true; // 마우스 커서를 보이게 합니다.
+        Cursor.lockState = CursorLockMode.None; // 마우스 커서의 제한을 해제합니다.
     }
 
 

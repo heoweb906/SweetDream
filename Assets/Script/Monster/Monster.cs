@@ -34,7 +34,8 @@ public class Monster : MonoBehaviour
         currentHealth -= damageAmount;
         renderer.material.color = Color.black;
 
-        // 맞을 때마다 위로 이동하게 해놨음 테스트용임
+        // 맞을 때마다 위로 이동하게 해놨음 테스트용임 @@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        // 지금 이거 때문에 몬스터들이 맞으면 이상한 곳으로 이동함 @@@@@@@@@@@@@@@@@@@@@@
         transform.position = originalPosition + Vector3.up * 0.1f; // 원래 위치에서 약간 위로 이동
         originalPosition = transform.position;
 

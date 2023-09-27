@@ -9,9 +9,9 @@ public class Camera : MonoBehaviour
 
     public Transform target; // 플레이어의 Transform을 저장할 변수
     public Vector3 offset;   // 카메라와 플레이어 사이의 거리
-
     public float turnSpeed; // 마우스 회전 속도    
     private float xRotate = 0.0f; // 내부 사용할 X축 회전량은 별도 정의 ( 카메라 위 아래 방향 )
+
 
 
     private void Start()

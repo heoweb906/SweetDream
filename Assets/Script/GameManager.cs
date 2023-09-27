@@ -6,16 +6,19 @@ using DG.Tweening;
 using UnityEngine.SceneManagement;
 using System.Net.NetworkInformation;
 using Unity.VisualScripting;
+using TMPro;
+using DG.Tweening.Core.Easing;
 
 public class GameManager : MonoBehaviour 
 {
-    public Player player;
+    public Player player; // Fever 실행하는 함수에서 할당 받음
     private static GameManager instance;
 
     [Header("총의 상태")]
     public bool rhythmCorrect; // 박자가 맞은 상황인지, 이게 true인 동안에만 키입력을 인정함
     public bool isReload; // 지금 재장전 중인지
     public int bulletCount; // 남은 총알 개수
+    public TMP_Text cruBulletCount;
     [Space(10f)]
 
     [Header("오브젝트")]
@@ -86,12 +89,15 @@ public class GameManager : MonoBehaviour
         iconOn = true;
     }
 
-    public void SetVolume()
-    {
-        soundManager.volume = playerInformation.VolumeBGM;
-        soundTime.volume = playerInformation.VolumeEffect;
-    }
 
+
+    private void Update()
+    {
+        if (playerInformation.IsGame)
+        {
+            ShowBulletCount();
+        }
+    }
 
     private void FixedUpdate()
     {   
@@ -111,11 +117,6 @@ public class GameManager : MonoBehaviour
             ComboBarBounceDown();
         }
     }
-
-
-
-
-
 
     private void CreateRhythmIcon()
     {
@@ -252,7 +253,7 @@ public class GameManager : MonoBehaviour
     public void ComboBarBounceUp() // 옳은 판정 시에 콤보바 게이지의 높이를 올리는 함수
     {
         float currentHeight = comboBarImage.rectTransform.sizeDelta.y;
-        float newHeight = currentHeight + 20; // 높이를 더함
+        float newHeight = currentHeight + 100; // 높이를 더함
 
         if (newHeight < 600)
         {
@@ -301,5 +302,37 @@ public class GameManager : MonoBehaviour
         }
         isFever = false;
         iconOn = true;
+    }
+
+    public void SetManagerSound()
+    {
+        soundManager.volume = playerInformation.VolumeBGM;
+        soundTime.volume = playerInformation.VolumeBGM;
+    }
+
+    public void SetVolume()
+    {
+        soundManager.volume = playerInformation.VolumeBGM;
+        soundTime.volume = playerInformation.VolumeEffect;
+    }
+
+
+    private void ShowBulletCount()
+    {
+        // #. 재장 전 중일 때 표시할 거
+        if (isReload)
+        {
+            cruBulletCount.text = "X";
+        }
+        else
+        {
+            // #. 장전 중이 아닐 때는 최대 탄창의 수를 표시
+            cruBulletCount.text = bulletCount.ToString();
+        }
+
+        if (isFever)
+        {
+            cruBulletCount.text = "무무한한대대";
+        }
     }
 }
