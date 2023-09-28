@@ -12,6 +12,7 @@ public class MenuUIControl : MonoBehaviour
     public bool isSettingPanel; // 세팅 패널이 켜져 있는지 아닌지
     public GameObject settingPanel;
 
+
     [Header("마우스 감도 관련")]
     public float mouseFloat;
     public Slider mouseSensitivitySlider; // 슬라이더 변수 추가

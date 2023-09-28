@@ -313,7 +313,7 @@ public class GameManager : MonoBehaviour
     public void SetVolume()
     {
         soundManager.volume = playerInformation.VolumeBGM;
-        soundTime.volume = playerInformation.VolumeEffect;
+        soundTime.volume = playerInformation.VolumeBGM;
     }
 
 

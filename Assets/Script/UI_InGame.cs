@@ -9,9 +9,17 @@ using Unity.VisualScripting;
 
 public class UI_InGame : MonoBehaviour
 {
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // 해당 스테이지에 몬스터가 있는 동안에는 설정할 수 없도록 수정해야 함
+    // or 설정창을 열면 판정선을 한번 클리어하게 수정해야함 (피버타임처럼)
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
+
     public GameManager gameManager;
     public PlayerInformation playerInformation;
-    public Camera camera;
+    public new Camera camera;
     public Player player;
 
     [Header("설정창 관련")]
@@ -87,16 +95,13 @@ public class UI_InGame : MonoBehaviour
 
     public void GoMenu()
     {
-        if (!(playerInformation.IsMenu))  // 메뉴화면이 아닌 경우에만
-        {
-            UnlockCursor(); // 커서 락 해제
+        UnlockCursor(); // 커서 락 해제
 
-            SceneManager.LoadScene("Menu"); // "YourSceneName"은 이동하고자 하는 씬의 이름으로 바꿔주세요.
-            gameManager.soundManager.Stop();
-            playerInformation.IsMenu = true;
-            playerInformation.IsGame = false;
-            gameManager.iconOn = false;
-        }
+        SceneManager.LoadScene("Menu"); // "YourSceneName"은 이동하고자 하는 씬의 이름으로 바꿔주세요.
+        gameManager.soundManager.Stop();
+        playerInformation.IsMenu = true;
+        playerInformation.IsGame = false;
+        gameManager.iconOn = false;
     }
     private void UnlockCursor()
     {

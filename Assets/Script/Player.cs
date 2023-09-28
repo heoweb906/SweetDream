@@ -93,7 +93,9 @@ public class Player : MonoBehaviour
     private void Start()
     {
         CamLock(); // 게임 시작 시 카메라 락
-        SetPlayerSound(); // 환경 설정에 맞도록 효과음 사운드 조절;
+        SetPlayerSound(); // 환경 설정에 맞도록 효과음 사운드 조절; 
+                          // 메뉴화면의 UI 컨트롤러는 플레이어의 함수를 실행시킬 수 없기 때문에 1번 실행시켜주는 거임
+
 
         if (!(gameManager.isFever))
         {
