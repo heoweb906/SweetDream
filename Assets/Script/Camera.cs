@@ -7,6 +7,7 @@ public class Camera : MonoBehaviour
 {
     public PlayerInformation playerInformation;
     public UI_InGame inGame_UI;
+    public Player player;
 
     public Transform target; // 플레이어의 Transform을 저장할 변수
     public Vector3 offset;   // 카메라와 플레이어 사이의 거리
@@ -17,6 +18,7 @@ public class Camera : MonoBehaviour
     private void Start()
     {
         inGame_UI = FindAnyObjectByType<UI_InGame>();
+        player = FindAnyObjectByType<Player>();
         SetMouseSpeed();
     }
 
@@ -35,7 +37,7 @@ public class Camera : MonoBehaviour
             transform.position = desiredPosition;
         }
 
-        if(!(inGame_UI.isSettingPanel))
+        if(!(inGame_UI.isSettingPanel) && !(player.isDie))
         {
             // 좌우로 움직인 마우스의 이동량 * 속도에 따라 카메라가 좌우로 회전할 양 계산
             float yRotateSize = Input.GetAxis("Mouse X") * turnSpeed;

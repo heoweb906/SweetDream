@@ -11,10 +11,8 @@ public class UI_InGame : MonoBehaviour
 {
     //@@@@@@@@@@@@@@@@@@@@@@@@@@
     // 해당 스테이지에 몬스터가 있는 동안에는 설정할 수 없도록 수정해야 함
-    // or 설정창을 열면 판정선을 한번 클리어하게 수정해야함 (피버타임처럼)
+    // or 설정창을 열면 판정선을 모두 지우도록 수정해야함 (피버타임처럼)
     //@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
 
 
     public GameManager gameManager;
@@ -22,7 +20,10 @@ public class UI_InGame : MonoBehaviour
     public new Camera camera;
     public Player player;
 
-    [Header("설정창 관련")]
+    [Header("게임 오버 패널")]
+    public GameObject gameoverPanel;
+
+    [Header("설정창 패널")]
     public bool isSettingPanel; // 세팅 패널이 켜져 있는지 아닌지
     public GameObject settingPanel;
 
@@ -69,6 +70,12 @@ public class UI_InGame : MonoBehaviour
         }
     }
 
+    public void OnOffGameoverPanel()
+    {
+        player.CamUnlock();
+        gameoverPanel.gameObject.SetActive(true);
+    }
+
     public void OnMouseSensitivityChanged(float value) // 마우스 감도 조절 슬라이더 함수
     {
         // 소수점 2자리까지 반올림하여 mouseFloat에 할당
@@ -108,6 +115,4 @@ public class UI_InGame : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
-
-
 }

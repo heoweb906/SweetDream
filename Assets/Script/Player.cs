@@ -25,6 +25,8 @@ public class Player : MonoBehaviour
     public float rollSpeed = 10f; // 구르기 속도
     public float rollDuration = 0.5f; // 구르기 지속 시간
     public int attackDamage = 10;    // 공격 데미지
+
+    public bool isDie;
     [Space(10f)]
 
 
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
     [Header("FEEL 관련")]
     public MMF_Player mmfPlayer_Camera;
     public MMF_Player mmfPlayer_OnDamage;
+    public MMF_Player mmfPlayer_OnDie;
     // mmfPlayer_Camera?.PlayFeedbacks();
 
 
@@ -107,9 +110,6 @@ public class Player : MonoBehaviour
             weaponNumber = playerInformation.WeponColor;
         }
     }
-
-   
-
 
 
     private void Update()
@@ -276,7 +276,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void FeverAttack()
+    private void FeverAttack() // 피버 공격 함수
     {
         Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
         RaycastHit hit;
@@ -308,7 +308,37 @@ public class Player : MonoBehaviour
             gameManager.ActivateHpImage(hp - 1);
             mmfPlayer_OnDamage?.PlayFeedbacks();
         }
+        if(hp == 0)
+        {
+            isDie = true;
+            StartCoroutine(DoDie());
+        }
     }
+
+    public IEnumerator DoDie()
+    {
+        mmfPlayer_OnDie?.PlayFeedbacks();
+        // 뒤로 밀리는 거리와 시간을 설정
+        float pushBackDistance = 2.0f; // 뒤로 밀릴 거리
+        float pushBackTime = 0.8f; // 뒤로 밀리는 시간 (초)
+        Vector3 currentPosition = transform.position;
+        float elapsedTime = 0f;
+        while (elapsedTime < pushBackTime)
+        {
+            Vector3 targetPosition = currentPosition - transform.forward * pushBackDistance;
+            transform.position = Vector3.Lerp(currentPosition, targetPosition, elapsedTime / pushBackTime);
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+        yield return new WaitForSeconds(1.9f);
+
+        ingame_UI.OnOffGameoverPanel();
+    }
+
+
+
+
 
     public void FeverOn()
     {
