@@ -26,16 +26,16 @@ public class Monster : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>(); // GameManager를 찾아서 할당
         stagemanager = FindObjectOfType<StageManager>();
 
-        //renderer = GetComponent<Renderer>();
-        //if (renderer != null)
-        //{
-        //    monsterMaterial = renderer.material;
-        //    originalColor = monsterMaterial.GetColor("_BaseColor"); // 원래 색상 저장
-        //}
-        //else
-        //{
-        //    Debug.LogError("Renderer 컴포넌트를 찾을 수 없습니다.");
-        //}
+        renderer = GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            monsterMaterial = renderer.material;
+            originalColor = monsterMaterial.GetColor("_BaseColor"); // 원래 색상 저장
+        }
+        else
+        {
+            Debug.LogError("Renderer 컴포넌트를 찾을 수 없습니다.");
+        }
     }
 
     public void TakeDamage(int damageAmount)
@@ -43,10 +43,10 @@ public class Monster : MonoBehaviour
         currentHealth -= damageAmount;
         renderer.material.color = Color.black;
 
-        //if (monsterMaterial != null)
-        //{
-        //    monsterMaterial.SetColor("_BaseColor", newColor);
-        //}
+        if (monsterMaterial != null)
+        {
+            monsterMaterial.SetColor("_BaseColor", newColor);
+        }
 
         if (currentHealth <= 0)
         {
@@ -57,10 +57,10 @@ public class Monster : MonoBehaviour
     }
     private void ColorBack()
     {
-        //if (monsterMaterial != null)
-        //{
-        //    monsterMaterial.SetColor("_BaseColor", originalColor);
-        //}
+        if (monsterMaterial != null)
+        {
+            monsterMaterial.SetColor("_BaseColor", originalColor);
+        }
     }
 
     private void Die()

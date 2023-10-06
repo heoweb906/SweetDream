@@ -9900,7 +9900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2355597321600082722, guid: 1b2cc02437122364a93af00512695a88, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3169148632916425112, guid: 1b2cc02437122364a93af00512695a88, type: 3}
       propertyPath: m_RootOrder
@@ -14508,7 +14508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1334077089430828573, guid: 134208663ec751c4c94197adf7580225, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1334077089430828579, guid: 134208663ec751c4c94197adf7580225, type: 3}
       propertyPath: monsterColor
@@ -15629,6 +15629,10 @@ PrefabInstance:
     - target: {fileID: 6035451886654692010, guid: 67e61fd6094df6547b2d0b16e348b6ff, type: 3}
       propertyPath: m_Name
       value: Rabbit_Orange
+      objectReference: {fileID: 0}
+    - target: {fileID: 6035451886654692010, guid: 67e61fd6094df6547b2d0b16e348b6ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6035451886654692011, guid: 67e61fd6094df6547b2d0b16e348b6ff, type: 3}
       propertyPath: m_RootOrder

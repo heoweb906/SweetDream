@@ -9,6 +9,7 @@ using DG.Tweening;
 
 public class TimingUIControl : MonoBehaviour
 {
+    [Header("판정선 관련")]
     public GameManager gameManager;
     public PlayerInformation playerInformation;
 
@@ -27,8 +28,14 @@ public class TimingUIControl : MonoBehaviour
 
     private bool hasExecuted = false;
 
-
     private float jugdeNum;
+    [Space(20f)]
+
+    [Header("마우스 감도 / 사운드")]
+    public float asdasd;
+
+
+
 
     public void Awake()
     {
