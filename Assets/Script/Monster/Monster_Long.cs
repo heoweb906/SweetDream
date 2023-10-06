@@ -29,10 +29,10 @@ public class Monster_Long : Monster
             anim.SetTrigger("doDie");
         }
 
-        if (!isAttack && !doDie && gameManager.bpmCount % 4 == 0 && gameManager.bpmCount != 0)  // 4번째 bpm 마다 한번씩 공격
+        if (!isAttack && !doDie && gameManager.bpmCount % 5 == 0 && gameManager.bpmCount != 0)  // 5번째 bpm 마다 한번씩 공격
         {
             isAttack = true;
-              StartCoroutine(AttackAfterDelay(0.35f));  // 0.35초 뒤에 공격 코루틴 시작 - 애니메이션 속도를 생각해서 공격과 BPM을 일치시키기 위해서
+            StartCoroutine(AttackAfterDelay(0.35f));  // 0.35초 뒤에 공격 코루틴 시작 - 애니메이션 속도를 생각해서 공격과 BPM을 일치시키기 위해서
         }
 
         LookAtPlayer(); // 플레이어 방향으로 회전시키는 함수
@@ -68,22 +68,47 @@ public class Monster_Long : Monster
         if (bulletPrefab != null)
         {
             // 플레이어 위치를 향해 회전
-            Vector3 playerPosition = player.position;
-            Vector3 offset = new Vector3(0f, -1f, 0f); // 아래로 1 단위만큼 내리는 오프셋
+            Vector3 playerPosition = player.position;  
+            Vector3 offset = new Vector3(0f, -1.2f, 0f); // 아래로 1 단위만큼 내리는 오프셋 // 총알이 목표로 하는 위치를 낮춤
             Vector3 direction = (playerPosition + offset) - transform.position;
             Quaternion rotation = Quaternion.LookRotation(direction);
 
             // 총알을 생성하고 발사
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, rotation);
-            Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+            Vector3 offset_2 = new Vector3(0f, 2.1f, 1f);
+            GameObject bullet = Instantiate(bulletPrefab, transform.position + offset_2, rotation);
 
-            // 총알에 힘을 가해 발사 (원하는 힘과 방향으로 수정해야 함)
-            float bulletSpeed = 10f; // 총알 발사 속도
-            bulletRb.velocity = direction.normalized * bulletSpeed;
-
-            // 총알을 발사한 후 몇 초 후에 자동으로 삭제 (원하는 시간으로 수정 가능)
-            float bulletDestroyDelay = 5f; // 몇 초 후에 삭제할지 설정
-            Destroy(bullet, bulletDestroyDelay);
+            // 커지는 효과와 발사를 위해 코루틴을 시작
+            StartCoroutine(EnlargeAndShoot(bullet, 1f, direction));
         }
     }
+
+    private IEnumerator EnlargeAndShoot(GameObject bullet, float enlargeTime, Vector3 direction)
+    {
+        // 총알을 커지는 효과
+        float initialScale = 0.5f; // 초기 크기
+        float finalScale = 3f;    // 최종 크기
+        float elapsedTime = 0f;
+
+        while (elapsedTime < enlargeTime)
+        {
+            float t = elapsedTime / enlargeTime;
+            float scale = Mathf.Lerp(initialScale, finalScale, t);
+
+            bullet.transform.localScale = new Vector3(scale, scale, scale);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+
+        // 총알에 힘을 가해 발사 (원하는 힘과 방향으로 수정해야 함)
+        float bulletSpeed = 10f; // 총알 발사 속도
+        bulletRb.velocity = direction.normalized * bulletSpeed;
+
+        // 총알을 발사한 후 몇 초 후에 자동으로 삭제 (원하는 시간으로 수정 가능)
+        float bulletDestroyDelay = 5f; // 몇 초 후에 삭제할지 설정
+        Destroy(bullet, bulletDestroyDelay);
+    }
+
 }

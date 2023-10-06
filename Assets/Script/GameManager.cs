@@ -253,7 +253,7 @@ public class GameManager : MonoBehaviour
     public void ComboBarBounceUp() // 옳은 판정 시에 콤보바 게이지의 높이를 올리는 함수
     {
         float currentHeight = comboBarImage.rectTransform.sizeDelta.y;
-        float newHeight = currentHeight + 100; // 높이를 더함
+        float newHeight = currentHeight + 40; // 높이를 더함
 
         if (newHeight < 600)
         {

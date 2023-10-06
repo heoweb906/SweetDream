@@ -82,7 +82,18 @@ public class Player : MonoBehaviour
     public Rigidbody rigid;
     public Camera mainCamera;
 
+
+
+    // #. 애니메이터 관련
+    public Animator gunAnimator;
+
+
     Vector3 moveVec; // 플레이어의 이동 값
+
+
+
+
+
 
 
     private void Awake()
@@ -262,7 +273,8 @@ public class Player : MonoBehaviour
                         {
                             monster.TakeDamage(attackDamage);
                             gameManager.ComboBarBounceUp();
-                            
+
+                            gunAnimator.SetTrigger("Fire");
                         }
                     }
                 }
