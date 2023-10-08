@@ -109,19 +109,40 @@ public class CutSceneBrain : MonoBehaviour
 
         if (cutIndex < cutInfos.Length)
         {
-            //이전 컷 스킵
+            // 이전 컷 스킵
             if (cutIndex > 0)
                 cutInfos[cutIndex - 1].DoEnter_Skip();
 
             if (CutShowing_C != null)
                 StopCoroutine(CutShowing_C);
 
-            //현재 컷 보여주기
-            cutInfos[cutIndex].DoEnter();  
-            if (cutIndex == 9)        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 마지막 컷신 순서
+            // 현재 컷 보여주기
+            cutInfos[cutIndex].DoEnter();
+
+            if (cutIndex == 29) // 마지막 컷신 순서
             {
                 StartCoroutine(DelayedBlinkText());
+                
             }
+
+            if(cutIndex == 10 || cutIndex == 26 || cutIndex == 27 || cutIndex == 28)  // 위아래 애니메이션을 줄 컷씬 번호들
+            {
+                cutInfos[cutIndex].DoUpDownAnimation_Position();
+            }
+            if (cutIndex == 27 || cutIndex == 29)  // 좌우로 움직이는 컷들
+            {
+                cutInfos[cutIndex].DoUpDownAnimation_Position();
+            }
+            if (cutIndex == 6 || cutIndex == 9 || cutIndex == 11|| cutIndex == 27)  // 좌우로 기울이는 컷들
+            {
+                cutInfos[cutIndex].DoLeftRightAnimation_Angle();
+            }
+
+
+
+
+
+
             CutShowing_C = CutShowingc();
             StartCoroutine(CutShowing_C);
         }
@@ -236,5 +257,44 @@ public class SingleCutInfo
         CutImg.DOKill();
 
         CutImg.DOColor(whiteClear, 0.5f);
+    }
+
+    public void DoUpDownAnimation_Position() // 위아래로 움직이는 애니메이션
+    {
+        // 아래로 이동하는 애니메이션
+        Vector2 downPosition = goalPos - Vector2.up * 30f; // 아래로 이동할 위치 (30 유닛 아래로)
+
+        // 위아래로 반복되는 애니메이션
+        Sequence upDownSequence = DOTween.Sequence()
+            .Append(CutRtf.DOAnchorPosY(downPosition.y, 0.5f).SetEase(Ease.Linear)) // 아래로 이동 (1.0초 동안)
+            .Append(CutRtf.DOAnchorPosY(goalPos.y, 0.5f).SetEase(Ease.Linear)); // 다시 원래 위치로 이동 (1.0초 동안)
+
+        upDownSequence.SetLoops(-1); // 무한 반복
+    }
+
+    public void DoLeftRightAnimation_Position()  // 좌우로 움직이는 애니메이션
+    {
+        // 왼쪽으로 기울이는 애니메이션
+        Vector2 leftPosition = goalPos - Vector2.right * 30f; // 왼쪽으로 기울일 위치 (30 유닛 왼쪽으로)
+
+        // 좌우로 반복되는 애니메이션
+        Sequence leftRightSequence = DOTween.Sequence()
+            .Append(CutRtf.DOAnchorPosX(leftPosition.x, 0.5f).SetEase(Ease.Linear)) // 왼쪽으로 기울임 (1.0초 동안)
+            .Append(CutRtf.DOAnchorPosX(goalPos.x, 0.5f).SetEase(Ease.Linear)); // 다시 원래 위치로 복귀 (1.0초 동안)
+
+    leftRightSequence.SetLoops(-1); // 무한 반복
+    }
+
+    public void DoLeftRightAnimation_Angle()
+    {
+        // 좌우로 기울이는 애니메이션
+        Quaternion leftRotation = Quaternion.Euler(0f, 0f, 10f); // 왼쪽으로 기울일 각도 (예: 20도)
+
+        // 좌우로 반복되는 애니메이션
+        Sequence leftRightSequence = DOTween.Sequence()
+            .Append(CutRtf.DORotateQuaternion(leftRotation, 0.5f).SetEase(Ease.Linear)) // 왼쪽으로 기울임 (1.0초 동안)
+            .Append(CutRtf.DORotateQuaternion(Quaternion.identity, 0.5f).SetEase(Ease.Linear)); // 다시 원래 각도로 복귀 (1.0초 동안)
+
+        leftRightSequence.SetLoops(-1); // 무한 반복
     }
 }
