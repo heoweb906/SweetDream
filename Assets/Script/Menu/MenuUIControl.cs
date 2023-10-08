@@ -15,8 +15,7 @@ public class MenuUIControl : MonoBehaviour
 
     [Header("마우스 감도 관련")]
     public float mouseFloat;
-    public Slider mouseSensitivitySlider; // 슬라이더 변수 추가
-
+    public Slider mouseSensitivitySlider;
     public float volumeBGM;
     public float volumeEffect;
     public Slider volumeBGMSlider;
@@ -64,9 +63,9 @@ public class MenuUIControl : MonoBehaviour
 
         gameManager.ActivateImage(playerInformation.WeponColor); // 무기 정보에 맞게 바늘 UI 업데이트
         gameManager.ActivateHpImage(3); // 체력바 활성화
-        gameManager.SetVolume(); // 슬라이더 조절에서 하지만 혹시 모르니까......
+        gameManager.SetVolume(); // 슬라이더 작업에서 하는 거지만 혹시 모르니까... 
 
-        SceneManager.LoadScene("Play1"); // "YourSceneName"은 이동하고자 하는 씬의 이름으로 바꿔주세요.
+        SceneManager.LoadScene("Play1");
     } 
 
     public void SceneTurnTiming()

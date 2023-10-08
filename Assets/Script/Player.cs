@@ -273,11 +273,10 @@ public class Player : MonoBehaviour
                         {
                             monster.TakeDamage(attackDamage);
                             gameManager.ComboBarBounceUp();
-
-                            gunAnimator.SetTrigger("Fire");
                         }
                     }
                 }
+                gunAnimator.SetTrigger("Fire");
                 soundGun.Play(); 
             }
         }

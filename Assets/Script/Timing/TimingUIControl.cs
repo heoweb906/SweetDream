@@ -29,19 +29,32 @@ public class TimingUIControl : MonoBehaviour
     private bool hasExecuted = false;
 
     private float jugdeNum;
-    [Space(20f)]
-
-    [Header("마우스 감도 / 사운드")]
-    public float asdasd;
+    [Space(30f)]
 
 
-
+    [Header("마우스 감도 / 사운드 설정")]
+    public float mouseFloat;
+    public Slider mouseSensitivitySlider; 
+    public float volumeBGM;
+    public float volumeEffect;
+    public Slider volumeBGMSlider;
+    public Slider volumeEffectSlider;
 
     public void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
         playerInformation = FindObjectOfType<PlayerInformation>();
         playerInformation.IsMenu = true;
+    }
+    public void Start()
+    {
+        // #. 현재 수치 정보를 슬라이더에 가져옴
+        mouseFloat = playerInformation.MouseSpeed; 
+        mouseSensitivitySlider.value = mouseFloat; 
+        volumeBGM = playerInformation.VolumeBGM;
+        volumeBGMSlider.value = volumeBGM;
+        volumeEffect = playerInformation.VolumeEffect;
+        volumeEffectSlider.value = volumeEffect;
     }
     private void Update()
     {
@@ -83,9 +96,7 @@ public class TimingUIControl : MonoBehaviour
                 hasExecuted = true; // 한 번만 실행되도록 플래그를 설정
             }
         });
-
         StartCoroutine(DestroyAfterDelay(timingIcon_.gameObject, iconDestroydeay, startTime));
-
     }
 
     public void RhythmAnimationCompleted(Image rhythmImage)
@@ -105,20 +116,6 @@ public class TimingUIControl : MonoBehaviour
             Destroy(obj);
         }
     }
-
-
-
-
-
-
-
-
-    public void SceneTurnMenu()
-    {
-        SceneManager.LoadScene("Menu");
-        gameManager.soundTime.Stop();
-    }
-
     public void jugdeMinus()
     {
         if(playerInformation.Jugde > -50)
@@ -126,7 +123,6 @@ public class TimingUIControl : MonoBehaviour
             playerInformation.Jugde -= 1;
         }
     }
-
     public void jugdePlus()
     {
         if (playerInformation.Jugde < 50)
@@ -151,6 +147,59 @@ public class TimingUIControl : MonoBehaviour
             jugdeNum = playerInformation.Jugde * (0.1f);
             jugdeNumber.text = "+" + jugdeNum.ToString();
         }
+    }
+
+
+
+    // @@@@@@@@@@@@@@@@@@@@@@@
+    // #. 기타 설정 관련
+    // @@@@@@@@@@@@@@@@@@@@@@@
+
+    public void OnMouseSensitivityChanged(float value) // 마우스 감도 조절 슬라이더 함수
+    {
+        // 소수점 2자리까지 반올림하여 mouseFloat에 할당
+        mouseFloat = Mathf.Round(value * 100) / 100;
+        playerInformation.MouseSpeed = mouseFloat;
+    }
+
+    public void OnBGM_SoundSensitivityChanged(float value) // 배경음악 크기 조절 슬라이더 함수
+    {
+        volumeBGM = Mathf.Round(value * 100) / 100;
+        playerInformation.VolumeBGM = volumeBGM;
+        gameManager.SetVolume();
+    }
+
+    public void OnEffect_SoundSensitivityChanged(float value) // 효과음 크기 조절 슬라이더 함수
+    {
+        volumeEffect = Mathf.Round(value * 100) / 100;
+        playerInformation.VolumeEffect = volumeEffect;
+        gameManager.SetVolume();
+    }
+
+
+
+    public void SceneTurnMenu()
+    {
+        gameManager.soundTime.Stop();
+
+        gameManager.bulletCount = 10; // 게임 첫 시작시의 총알
+        gameManager.soundManager.Play();
+        gameManager.GameStart();
+        gameManager.isReload = false;
+        playerInformation.IsMenu = false;
+        playerInformation.IsGame = true;
+
+        if (gameManager.isFever) // @@@@@@@@@@@@@@@ 임시로 피버를 끝나게 해놓은 거임
+        {
+            gameManager.SubFever();
+        }
+
+        gameManager.ActivateImage(playerInformation.WeponColor); // 무기 정보에 맞게 바늘 UI 업데이트
+        gameManager.ActivateHpImage(3); // 체력바 활성화
+        gameManager.SetVolume(); // 슬라이더 작업에서 하는 거지만 혹시 모르니까... 
+
+        SceneManager.LoadScene("Lobby");
+ 
     }
 
 }

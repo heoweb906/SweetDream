@@ -125,6 +125,8 @@ public class CutSceneBrain : MonoBehaviour
                 
             }
 
+
+            // #. 컷씬 애니메이션 관련
             if(cutIndex == 10 || cutIndex == 26 || cutIndex == 27 || cutIndex == 28)  // 위아래 애니메이션을 줄 컷씬 번호들
             {
                 cutInfos[cutIndex].DoUpDownAnimation_Position();
@@ -137,10 +139,6 @@ public class CutSceneBrain : MonoBehaviour
             {
                 cutInfos[cutIndex].DoLeftRightAnimation_Angle();
             }
-
-
-
-
 
 
             CutShowing_C = CutShowingc();
