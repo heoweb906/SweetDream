@@ -104,7 +104,7 @@ public class UI_InGame : MonoBehaviour
     {
         UnlockCursor(); // 커서 락 해제
 
-        SceneManager.LoadScene("Menu"); // "YourSceneName"은 이동하고자 하는 씬의 이름으로 바꿔주세요.
+        SceneManager.LoadScene("Loading_Lobby"); // "YourSceneName"은 이동하고자 하는 씬의 이름으로 바꿔주세요.
         gameManager.soundManager.Stop();
         playerInformation.IsMenu = true;
         playerInformation.IsGame = false;

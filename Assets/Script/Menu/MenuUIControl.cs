@@ -31,6 +31,7 @@ public class MenuUIControl : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         playerInformation = FindObjectOfType<PlayerInformation>();
+
         playerInformation.IsMenu = true;
         playerInformation.IsGame = false;
 
