@@ -264,8 +264,8 @@ public class SingleCutInfo
 
         // 위아래로 반복되는 애니메이션
         Sequence upDownSequence = DOTween.Sequence()
-            .Append(CutRtf.DOAnchorPosY(downPosition.y, 0.5f).SetEase(Ease.Linear)) // 아래로 이동 (1.0초 동안)
-            .Append(CutRtf.DOAnchorPosY(goalPos.y, 0.5f).SetEase(Ease.Linear)); // 다시 원래 위치로 이동 (1.0초 동안)
+            .Append(CutRtf.DOAnchorPosY(downPosition.y, 0.5f).SetEase(Ease.Linear)) // 아래로 이동 (0.5초 동안)
+            .Append(CutRtf.DOAnchorPosY(goalPos.y, 0.5f).SetEase(Ease.Linear)); // 다시 원래 위치로 이동 (0.5초 동안)
 
         upDownSequence.SetLoops(-1); // 무한 반복
     }
@@ -277,21 +277,21 @@ public class SingleCutInfo
 
         // 좌우로 반복되는 애니메이션
         Sequence leftRightSequence = DOTween.Sequence()
-            .Append(CutRtf.DOAnchorPosX(leftPosition.x, 0.5f).SetEase(Ease.Linear)) // 왼쪽으로 기울임 (1.0초 동안)
-            .Append(CutRtf.DOAnchorPosX(goalPos.x, 0.5f).SetEase(Ease.Linear)); // 다시 원래 위치로 복귀 (1.0초 동안)
+            .Append(CutRtf.DOAnchorPosX(leftPosition.x, 0.5f).SetEase(Ease.Linear)) // 왼쪽으로 기울임 (0.5초 동안)
+            .Append(CutRtf.DOAnchorPosX(goalPos.x, 0.5f).SetEase(Ease.Linear)); // 다시 원래 위치로 복귀 (0.5초 동안)
 
-    leftRightSequence.SetLoops(-1); // 무한 반복
+        leftRightSequence.SetLoops(-1); // 무한 반복
     }
 
     public void DoLeftRightAnimation_Angle()
     {
         // 좌우로 기울이는 애니메이션
-        Quaternion leftRotation = Quaternion.Euler(0f, 0f, 10f); // 왼쪽으로 기울일 각도 (예: 20도)
+        Quaternion leftRotation = Quaternion.Euler(0f, 0f, 10f); // 왼쪽으로 기울일 각도 (10도)
 
         // 좌우로 반복되는 애니메이션
         Sequence leftRightSequence = DOTween.Sequence()
-            .Append(CutRtf.DORotateQuaternion(leftRotation, 0.5f).SetEase(Ease.Linear)) // 왼쪽으로 기울임 (1.0초 동안)
-            .Append(CutRtf.DORotateQuaternion(Quaternion.identity, 0.5f).SetEase(Ease.Linear)); // 다시 원래 각도로 복귀 (1.0초 동안)
+            .Append(CutRtf.DORotateQuaternion(leftRotation, 0.5f).SetEase(Ease.Linear)) // 왼쪽으로 기울임 (0.5초 동안)
+            .Append(CutRtf.DORotateQuaternion(Quaternion.identity, 0.5f).SetEase(Ease.Linear)); // 다시 원래 각도로 복귀 (0.5초 동안)
 
         leftRightSequence.SetLoops(-1); // 무한 반복
     }
