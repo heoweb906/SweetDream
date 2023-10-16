@@ -19,6 +19,7 @@ public class UI_InGame : MonoBehaviour
     public PlayerInformation playerInformation;
     public new Camera camera;
     public Player player;
+    public StageManager stageManager;
 
     [Header("게임 오버 패널")]
     public GameObject gameoverPanel;
@@ -34,6 +35,8 @@ public class UI_InGame : MonoBehaviour
     public float volumeEffect;
     public Slider volumeBGMSlider;
     public Slider volumeEffectSlider;
+
+    public GameObject textPanel; // "아직 필드에 몬스터가 있습니다."
 
     public void Start()
     {
@@ -51,6 +54,42 @@ public class UI_InGame : MonoBehaviour
     }
 
     public void OnOffSettingPanel()
+    {
+        if (stageManager.MonsterCount > 0)
+        {
+            textPanel.SetActive(true);
+            CamLock();
+            Invoke("TextPanelOff",0.5f);
+        }
+        else if(stageManager.MonsterCount <= 0)
+        {
+            if (!(player.isDie))
+            {
+                if (!(settingPanel.activeSelf))
+                {
+                    player.CamUnlock();
+
+                    isSettingPanel = true;
+                    settingPanel.gameObject.SetActive(true);
+                }
+                else if (settingPanel.activeSelf)
+                {
+                    camera.SetMouseSpeed();
+
+                    isSettingPanel = false;
+                    settingPanel.gameObject.SetActive(false);
+
+                    player.CamLock();
+                }
+            }
+        }
+    }
+    public void TextPanelOff()
+    {
+        textPanel.SetActive(false);
+    }
+
+    public void OnOffSettingPanel_PlayerDie()
     {
         if (!(settingPanel.activeSelf))
         {
@@ -114,5 +153,19 @@ public class UI_InGame : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+    }
+    public void CamLock() // 마우스 커서를 숨기는 함수
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void QuitGame() // 게임 종료 버튼 클릭(게임 종료)
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

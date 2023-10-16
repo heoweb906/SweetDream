@@ -12,9 +12,12 @@ public class Monster : MonoBehaviour
     [Header("몬스터 정보")]
     public int currentHealth;
     public int monsterColor;
-    public bool doDie; 
+    public bool doDie;
 
-    // 일단 색상을 변경시키기 위해 넣어놨음
+
+    [Header("관련 변수들")]
+
+    // #. 일단 색상을 변경시키기 위해 넣어놨음
     public new Renderer renderer; // 렌더러 컴포넌트
     public Color originalColor; // 원래 색상
     public Color newColor; // 변경하려는 색상
@@ -26,7 +29,6 @@ public class Monster : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>(); // GameManager를 찾아서 할당
         stagemanager = FindObjectOfType<StageManager>();
 
-        renderer = GetComponent<Renderer>();
         if (renderer != null)
         {
             monsterMaterial = renderer.material;
@@ -50,7 +52,8 @@ public class Monster : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            Invoke("Die", 1.5f);
+
+            Invoke("Die", 3.0f);
         }
 
         Invoke("ColorBack", 0.1f);
@@ -66,6 +69,13 @@ public class Monster : MonoBehaviour
     private void Die()
     {
         stagemanager.MonsterCount--;
+
+        FixPosition(transform.position); // 현재 위치로 고정
         Destroy(gameObject);
+    }
+
+    public void FixPosition(Vector3 desiredPosition)
+    {
+        transform.position = desiredPosition;
     }
 }

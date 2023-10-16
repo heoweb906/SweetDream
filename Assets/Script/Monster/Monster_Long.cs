@@ -8,26 +8,26 @@ public class Monster_Long : Monster
     public bool isAttack;
     public GameObject bulletPrefab; // 총알 프리팹을 연결해야 합니다.
 
-    private Animator anim;
+    public Animator anim;
     private Transform player;
-    private Rigidbody rb;
+    private Rigidbody rigid;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
-        anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
+        rigid = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
         if (currentHealth <= 0 && !doDie)
         {
-            anim.SetBool("boolDie",true);
-            doDie = true;
             anim.SetTrigger("doDie");
+            //anim.SetBool("boolDie",true);
+            doDie = true;
         }
+
 
         if (!isAttack && !doDie && gameManager.bpmCount % 5 == 0 && gameManager.bpmCount != 0)  // 5번째 bpm 마다 한번씩 공격
         {
@@ -35,7 +35,10 @@ public class Monster_Long : Monster
             StartCoroutine(AttackAfterDelay(0.35f));  // 0.35초 뒤에 공격 코루틴 시작 - 애니메이션 속도를 생각해서 공격과 BPM을 일치시키기 위해서
         }
 
-        LookAtPlayer(); // 플레이어 방향으로 회전시키는 함수
+        if (!doDie)
+        {
+            LookAtPlayer(); // 플레이어 방향으로 회전시키는 함수
+        }
     }
 
     private IEnumerator AttackAfterDelay(float delay)
@@ -45,7 +48,8 @@ public class Monster_Long : Monster
     }
     IEnumerator Attack()
     {
-        anim.SetTrigger("doAttack");
+        //anim.SetTrigger("doAttack");
+
         yield return new WaitForSeconds(1.5f);
         isAttack = false;
     }

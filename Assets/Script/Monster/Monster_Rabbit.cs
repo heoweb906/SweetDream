@@ -11,16 +11,16 @@ public class Monster_Rabbit : Monster
     public bool isChase = true;
     public bool isAttack;
 
-    private Animator anim;
+    public Animator anim;
     private Transform player;
     private Rigidbody rb;
     private NavMeshAgent nav;
+    public new CapsuleCollider collider;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
-        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();
     }
@@ -28,23 +28,33 @@ public class Monster_Rabbit : Monster
     void Update()
     {
         nav.SetDestination(player.position);
+
         if (currentHealth <= 0 && !doDie)
         {
+            collider.enabled = false;
+            FixPosition(transform.position);
             doDie = true;
             isChase = false;
+            nav.isStopped = true; // NavMeshAgent ¸ØÃã
             nav.speed = 0;
+            nav.angularSpeed = 0;
             anim.SetTrigger("doDie");
         }
 
         if(!isChase)
         {
+            FixPosition(transform.position);
+            nav.isStopped = true; // NavMeshAgent ¸ØÃã
             nav.speed = 0;
             nav.angularSpeed = 0;
+            anim.SetBool("isWalk",false);
         }
         else
         {
-            nav.speed = 2;
-            nav.angularSpeed = 250;
+            nav.isStopped = false; // NavMeshAgent ¸ØÃã
+            nav.speed = 12;
+            nav.angularSpeed = 720;
+            anim.SetBool("isWalk", true);
         }
     }
 
@@ -57,8 +67,8 @@ public class Monster_Rabbit : Monster
 
     void Targetting()
     {
-        float targetRadius = 1f;
-        float targetRange = 1f;
+        float targetRadius = 2f;
+        float targetRange = 3f;
 
         RaycastHit[] rayHits =
             Physics.SphereCastAll(transform.position, targetRadius, transform.forward, targetRange,
@@ -75,9 +85,14 @@ public class Monster_Rabbit : Monster
     {
         isChase = false;
         isAttack = true;
-        anim.SetTrigger("doAttack");
 
-        yield return new WaitForSeconds(2f);
+        anim.SetTrigger("doAttack");
+        yield return new WaitForSeconds(0.6f);
+        AttackAreaOn();
+        yield return new WaitForSeconds(0.1f);
+        AttackAreaOff();
+
+        yield return new WaitForSeconds(1.3f);
         isChase = true;
         isAttack = false;
     }
@@ -98,4 +113,6 @@ public class Monster_Rabbit : Monster
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }
+
+  
 }

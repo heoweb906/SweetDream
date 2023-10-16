@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour
     public void GameStart()
     {
         Invoke("SetStartGame", playerInformation.Jugde * 0.01f + 1.5f);  // 이걸로 판정을 맞출 거임
+                                                                         // 1.5초는 최초 딜레이
     }
     private void SetStartGame()
     {
@@ -93,10 +94,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (playerInformation.IsGame)
-        {
-            ShowBulletCount();
-        }
+        ShowBulletCount();
+        //if (playerInformation.IsGame)
+        //{
+            
+        //}
     }
 
     private void FixedUpdate()

@@ -13,18 +13,21 @@ public class TimingUIControl : MonoBehaviour
     public GameManager gameManager;
     public PlayerInformation playerInformation;
 
+    public Canvas canvasTiming;
     public TMP_Text jugdeNumber;
+    public bool iconOn;
     public Image centerIcon;
     public Image timingIcon;
+    public Image timingIcon_Sand;
     public RectTransform position_timingIcon;
-    public float moveDistance = 1400f; // 이동 거리
-    public float iconDestroydeay = 1.1f; // 파괴 시간
-    public float iconSpeed = 1.1f; 
+    public float moveDistance = 1000f; // 이동 거리
+    public float iconDestroydeay = 4f; // 파괴 시간
+    public float iconSpeed = 1f; 
     public float iconFadeDuration = 1f; // 페이드 인(서서히 나타나기) 시간
 
 
     private float timeSinceLastCreation = 0f;
-    private float creationInterval = 2f; // 1초
+    private float creationInterval = 1f; // 1초
 
     private bool hasExecuted = false;
 
@@ -55,19 +58,41 @@ public class TimingUIControl : MonoBehaviour
         volumeBGMSlider.value = volumeBGM;
         volumeEffect = playerInformation.VolumeEffect;
         volumeEffectSlider.value = volumeEffect;
+
+        // #. 가운데 아이콘 이동
+        Vector3 centerIconPosition__ = centerIcon.rectTransform.anchoredPosition;
+        centerIconPosition__.x = playerInformation.Jugde * 5f; // 원하는 이동 거리
+        centerIcon.rectTransform.anchoredPosition = centerIconPosition__;
+
+        TimingStart();
     }
+
+    public void TimingStart()
+    {
+        Invoke("SetStartTimiig", playerInformation.Jugde * 0.01f + 1.5f);  // 이걸로 판정을 맞출 거임
+                                                                         // 1.5초는 최초 딜레이
+    }
+    private void SetStartTimiig()
+    {
+        iconOn = true;
+    }
+
+
     private void Update()
     {
         ShowJugdeNumber();
     }
     private void FixedUpdate()
     {
-        timeSinceLastCreation += Time.fixedUnscaledDeltaTime;
-
-        if (timeSinceLastCreation >= creationInterval)
+        if (iconOn)
         {
-            CreateTimingIcon();
-            timeSinceLastCreation = 0.0f; // 초기화해서 다음 호출까지 기다립니다.
+            timeSinceLastCreation += Time.fixedUnscaledDeltaTime;
+
+            if (timeSinceLastCreation >= creationInterval)
+            {
+                CreateTimingIcon();
+                timeSinceLastCreation = 0.0f; // 초기화해서 다음 호출까지 기다립니다.
+            }
         }
     }
 
@@ -101,7 +126,11 @@ public class TimingUIControl : MonoBehaviour
 
     public void RhythmAnimationCompleted(Image rhythmImage)
     {
-        // 이미지가 겹쳤을 때 일어날 일
+        Image timingIconSand_ = Instantiate(timingIcon_Sand, rhythmImage.rectTransform.position, Quaternion.identity);
+        timingIconSand_.transform.SetParent(canvasTiming.transform);
+
+        timingIconSand_.DOFade(0f, 0.5f); // 알파값 서서히 1로 변경
+
         Debug.Log("이미지가 겹쳤습니다");
     }
 
@@ -121,6 +150,11 @@ public class TimingUIControl : MonoBehaviour
         if(playerInformation.Jugde > -50)
         {
             playerInformation.Jugde -= 1;
+
+            // #. 가운데 아이콘 이동
+            Vector3 centerIconPosition = centerIcon.rectTransform.anchoredPosition;
+            centerIconPosition.x -= 5f; // 원하는 이동 거리
+            centerIcon.rectTransform.anchoredPosition = centerIconPosition;
         }
     }
     public void jugdePlus()
@@ -128,6 +162,11 @@ public class TimingUIControl : MonoBehaviour
         if (playerInformation.Jugde < 50)
         {
             playerInformation.Jugde += 1;
+
+            // #. 가운데 아이콘 이동
+            Vector3 centerIconPosition = centerIcon.rectTransform.anchoredPosition;
+            centerIconPosition.x += 5f; // 원하는 이동 거리
+            centerIcon.rectTransform.anchoredPosition = centerIconPosition;
         }
     }
 

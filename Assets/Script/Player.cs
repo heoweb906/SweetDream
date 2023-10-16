@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     public int weaponNumber; // 1 = 빨강, 2 = 노랑, 3 = 파랑
     public float moveSpeed;  // 플레이어 스피드
     public float jumpForce; // 점프 힘
-    public float rollSpeed = 10f; // 구르기 속도
+    public float rollSpeed = 40f; // 구르기 속도
     public float rollDuration = 0.5f; // 구르기 지속 시간
     public int attackDamage = 10;    // 공격 데미지
 
@@ -86,13 +86,7 @@ public class Player : MonoBehaviour
 
     // #. 애니메이터 관련
     public Animator gunAnimator;
-
-
     Vector3 moveVec; // 플레이어의 이동 값
-
-
-
-
 
 
 
@@ -134,7 +128,7 @@ public class Player : MonoBehaviour
         }
         else if(gameManager.isFever)
         {
-            if (Input.GetButton("Fire1"))
+            if (Input.GetButton("Fire1") && !isDie)
             {
                 timeSinceLastAttack += Time.deltaTime;
 
@@ -205,12 +199,16 @@ public class Player : MonoBehaviour
     void Move() // 이동을 관리하는 함수
     {
         // 플레이어의 바라보는 방향을 이용하여 이동 벡터를 계산
-        moveVec = new Vector3(hAxis, 0, vAxis).normalized;
-        moveVec = transform.forward * moveVec.z + transform.right * moveVec.x;
+        Vector3 moveVec = new Vector3(hAxis, 0, vAxis).normalized;
 
-        // 이동 속도를 적용하고 웅크리기 여부에 따라 조절
-        float currentMoveSpeed = moveSpeed * (wDown ? 0.3f : 1f);
-        transform.position += moveVec * currentMoveSpeed * Time.deltaTime;
+        // Rigidbody에 속도 적용
+        Vector3 newVelocity = transform.forward * moveVec.z * moveSpeed + transform.right * moveVec.x * moveSpeed;
+        newVelocity.y = rigid.velocity.y; // 현재 수직 속도 유지
+        rigid.velocity = newVelocity;
+
+        // 플레이어에게 강한 중력을 줌
+        rigid.AddForce(Vector3.down * 15f, ForceMode.Acceleration);
+
 
         // 점프 체크
         if (jDown && !isJumping)
@@ -244,7 +242,7 @@ public class Player : MonoBehaviour
     }
 
 
-    private void Jump() // 점프
+    private void Jump()
     {
         isJumping = true;
         rigid.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -253,7 +251,7 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        if (Input.GetButtonDown("Fire1") && gameManager.rhythmCorrect)
+        if (Input.GetButtonDown("Fire1") && gameManager.rhythmCorrect && !isDie)
         {
             if (!(gameManager.isReload) && gameManager.bulletCount > 0)
             {
@@ -304,7 +302,6 @@ public class Player : MonoBehaviour
                 monster.TakeDamage(attackDamage);
             }
         }
-
         soundMiniGun.Play();
     }
 
@@ -313,15 +310,20 @@ public class Player : MonoBehaviour
 
     public void OnDamage(int dmg) // 데미지를 받았을 때의 함수, 몬스터들이 사용할 수 있도록 public으로 함
     {
-        if(hp >= 1)
+        if(hp >= 1 && !isDie)
         {
             hp -= dmg;
             gameManager.ActivateHpImage(hp - 1);
             mmfPlayer_OnDamage?.PlayFeedbacks();
         }
-        if(hp == 0)
+        if(hp == 0 && !isDie)
         {
             isDie = true;
+            if(ingame_UI.isSettingPanel)
+            {
+                ingame_UI.OnOffSettingPanel_PlayerDie();  // 죽으면 활성화되어 있는 설정창을 꺼줌
+            }
+            
             StartCoroutine(DoDie());
         }
     }
