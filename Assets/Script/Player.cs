@@ -95,6 +95,10 @@ public class Player : MonoBehaviour
     private int playerLayer; // Player의 초기 레이어
 
 
+    // #. 레이 관련
+    private Vector3 rayDirection; // 레이캐스트가 발사된 방향을 저장하는 변수
+
+
 
     private void Awake()
     {
@@ -270,8 +274,10 @@ public class Player : MonoBehaviour
                 Debug.DrawRay(ray.origin, ray.direction * attackRange, hasHit ? Color.red : Color.green, 0.1f); // 레이 시각화
                 gameManager.bulletCount--;
 
-                if (hasHit && hit.collider.CompareTag("Monster"))
+                if (hasHit && (hit.collider.CompareTag("Monster") || hit.collider.CompareTag("Boss")))
                 {
+                    rayDirection = ray.direction.normalized;
+
                     Monster monster = hit.collider.GetComponent<Monster>();
                     if (monster != null)
                     {
@@ -291,6 +297,17 @@ public class Player : MonoBehaviour
                             gameManager.ComboBarBounceUp();
                         }
                     }
+
+                    Boss_Bullet_Color bullet = hit.collider.GetComponent<Boss_Bullet_Color>();
+                    if (bullet != null)
+                    {
+                        if (bullet.numColor == weaponNumber)
+                        {
+                            // 충돌 지점에서 나가는 방향 벡터를 사용
+                            bullet.SetNewDirection(rayDirection);
+                        }
+                    }
+
                 }
                 gunAnimator.SetTrigger("Fire");
                 soundGun.Play(); 

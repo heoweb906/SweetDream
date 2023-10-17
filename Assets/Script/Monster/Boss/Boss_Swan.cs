@@ -1,5 +1,6 @@
 using DG.Tweening;
 using DG.Tweening.Core.Easing;
+using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -9,6 +10,7 @@ public class Boss_Swan : MonoBehaviour
 {
     private GameManager gameManager;
     private StageManager stagemanager;
+    public Player player;
 
     [Header("테스트용 변수")]
     public GameObject[] patternSphere;
@@ -30,6 +32,18 @@ public class Boss_Swan : MonoBehaviour
     private Tweener colorTween;
     private bool isFlashing;
 
+    [Header("보스 관련 프리펩 / 정보들")]
+    public Transform[] position_nest;
+    public Transform position_Mouse;
+
+    // #. 기본 공격
+    public GameObject bullet_Simple;
+    public float bulletSpeed = 10.0f;
+
+    // #. 색 탄환 공격
+    public GameObject[] bullet_Color;
+    public float bulletSpeed_Color = 10.0f;
+
 
     private void Awake()
     {
@@ -46,6 +60,19 @@ public class Boss_Swan : MonoBehaviour
             Debug.LogError("Renderer 컴포넌트를 찾을 수 없습니다.");
         }
     }
+
+
+
+    public void Update()
+    {
+        // #. 패턴 테스트용
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            ShootBullet();
+        }
+    }
+
+
 
     // #. 데미지 받음 함수
     public void TakeDamage(int damageAmount)
@@ -117,6 +144,79 @@ public class Boss_Swan : MonoBehaviour
 
 
 
+    // #. 기본 공격
+    public void ShootBullet()
+    {
+        if (player != null && bullet_Simple != null && position_Mouse != null)
+        {
+            Vector3 bossMouthPosition = position_Mouse.position;
+            Vector3 playerPosition = player.transform.position;
+
+            // 방향 벡터 계산
+            Vector3 direction = (playerPosition - bossMouthPosition).normalized;
+
+            // 각도 간격 설정
+            float angleInterval = 20f;
+
+            // 생성할 총알 개수
+            for (int i = -2; i <= 2; i++)
+            {
+                // 현재 각도 계산
+                float currentAngle = i * angleInterval;
+
+                GameObject newBullet = Instantiate(bullet_Simple, bossMouthPosition, Quaternion.identity);
+                Rigidbody bulletRigidbody = newBullet.GetComponent<Rigidbody>();
+                if (bulletRigidbody != null)
+                {
+                    Vector3 bulletVelocity = Quaternion.Euler(0, currentAngle, 0) * direction;
+                    bulletRigidbody.velocity = bulletVelocity * bulletSpeed;
+                }
+            }
+        }
+    }
+
+    // #. 컬러 공격
+    public void ShootColorBullet()
+    {
+        if (player != null && bullet_Color != null && position_Mouse != null)
+        {
+            // 보스 입 위치 (position_Mouse)
+            Vector3 bossMouthPosition = position_Mouse.position;
+
+            // 총알을 보스의 입 위치에 랜덤한 색상의 총알을 생성
+            int randomNum = Random.Range(0, 3);
+            GameObject newBullet = Instantiate(bullet_Color[randomNum], bossMouthPosition, Quaternion.identity);
+
+            // 총알을 플레이어 방향으로 발사
+            if (player.transform != null)
+            {
+                Vector3 direction = (player.transform.position - bossMouthPosition).normalized;
+                Rigidbody bulletRigidbody = newBullet.GetComponent<Rigidbody>();
+
+                if (bulletRigidbody != null)
+                {
+                    // 총알에 힘을 가해 속도 조절
+                    bulletRigidbody.velocity = direction * bulletSpeed;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -137,6 +237,25 @@ public class Boss_Swan : MonoBehaviour
                 // 나머지는 비활성화
                 patternSphere[i].SetActive(false);
             }
+        }
+    }
+
+
+    // #. 랜덤한 패턴을 실행시키는 함수
+    private void RandomPattern()
+    {
+        int randomNum = Random.Range(0, 5);
+        switch (randomNum)
+        {
+            case 0:
+                
+                break;
+            //case 1:
+            //    CallFunction2();
+            //    break;
+            //case 2:
+            //    CallFunction3();
+            //    break;
         }
     }
 
