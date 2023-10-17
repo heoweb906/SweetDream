@@ -78,6 +78,7 @@ public class Player : MonoBehaviour
 
     private bool isJumping; // 점프 중인지 여부를 나타내는 변수
     private bool isRolling; // 구르고 있는 중인지 여부를 나타내는 변수
+    private bool isDamaging; // 공격을 받아 무적인 상태
 
     public Rigidbody rigid;
     public Camera mainCamera;
@@ -88,14 +89,21 @@ public class Player : MonoBehaviour
     public Animator gunAnimator;
     Vector3 moveVec; // 플레이어의 이동 값
 
+    // #. 레이어 변경 관련
+    private float layerChangeDuration = 1.5f;     // 레이어 변경 지속 시간 (초)
+    private bool isChangingLayer = false;
+    private int playerLayer; // Player의 초기 레이어
+
 
 
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>(); // GameManager를 찾아서 할당
         playerInformation = FindObjectOfType<PlayerInformation>();
-        CamLock();
         rigid = GetComponent<Rigidbody>();
+
+        CamLock();
+        playerLayer = gameObject.layer;
     }
 
     private void Start()
@@ -273,6 +281,16 @@ public class Player : MonoBehaviour
                             gameManager.ComboBarBounceUp();
                         }
                     }
+
+                    Boss_Swan boss = hit.collider.GetComponent<Boss_Swan>();
+                    if (boss != null)
+                    {
+                        if (boss.monsterColor == weaponNumber)
+                        {
+                            boss.TakeDamage(attackDamage);
+                            gameManager.ComboBarBounceUp();
+                        }
+                    }
                 }
                 gunAnimator.SetTrigger("Fire");
                 soundGun.Play(); 
@@ -310,12 +328,22 @@ public class Player : MonoBehaviour
 
     public void OnDamage(int dmg) // 데미지를 받았을 때의 함수, 몬스터들이 사용할 수 있도록 public으로 함
     {
-        if(hp >= 1 && !isDie)
+        if (hp >= 1 && !isDie && !isDamaging)
         {
+            isDamaging = true;
             hp -= dmg;
             gameManager.ActivateHpImage(hp - 1);
             mmfPlayer_OnDamage?.PlayFeedbacks();
+
+            // 레이어 변경이 진행 중이지 않을 때만 실행
+            if (!isChangingLayer)
+            {
+                StartCoroutine(ChangeLayerTemporarily());
+            }
         }
+
+
+        // #. 죽음 함수 기능
         if(hp == 0 && !isDie)
         {
             isDie = true;
@@ -326,6 +354,21 @@ public class Player : MonoBehaviour
             
             StartCoroutine(DoDie());
         }
+    }
+
+    private IEnumerator ChangeLayerTemporarily()
+    {
+        // 레이어를 "PlayOnDamage"로 변경
+        gameObject.layer = LayerMask.NameToLayer("PlayerOnDamage");
+        isChangingLayer = true;
+
+        // 일정 시간 후 Player 레이어로 다시 변경
+        yield return new WaitForSeconds(layerChangeDuration);
+
+        // Player 레이어로 다시 변경
+        isDamaging = false;
+        gameObject.layer = playerLayer;
+        isChangingLayer = false;
     }
 
     public IEnumerator DoDie()
@@ -351,7 +394,7 @@ public class Player : MonoBehaviour
 
 
 
-
+    
 
     public void FeverOn()
     {
@@ -474,6 +517,8 @@ public class Player : MonoBehaviour
         Cursor.visible = true; // 마우스 커서를 보이게 합니다.
         Cursor.lockState = CursorLockMode.None; // 마우스 커서의 제한을 해제합니다.
     }
+
+
 
 
     private void OnCollisionEnter(Collision collision)

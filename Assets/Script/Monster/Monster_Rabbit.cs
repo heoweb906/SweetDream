@@ -31,6 +31,7 @@ public class Monster_Rabbit : Monster
 
         if (currentHealth <= 0 && !doDie)
         {
+            AttackAreaOff();
             collider.enabled = false;
             FixPosition(transform.position);
             doDie = true;
@@ -68,7 +69,7 @@ public class Monster_Rabbit : Monster
     void Targetting()
     {
         float targetRadius = 2f;
-        float targetRange = 3f;
+        float targetRange = 4f;
 
         RaycastHit[] rayHits =
             Physics.SphereCastAll(transform.position, targetRadius, transform.forward, targetRange,

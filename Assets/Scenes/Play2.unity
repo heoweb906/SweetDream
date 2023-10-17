@@ -12885,7 +12885,7 @@ Transform:
   - {fileID: 3724332745501137411}
   - {fileID: 6960746530048527695}
   m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &543450652400086355
 Transform:
@@ -13271,6 +13271,7 @@ MonoBehaviour:
   stagemanager: {fileID: 0}
   currentHealth: 20
   monsterColor: 2
+  damage: 1
   doDie: 0
   renderer: {fileID: 5828979000784045282}
   originalColor: {r: 1, g: 1, b: 1, a: 0}
@@ -15215,6 +15216,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7820163603664001100, guid: 16a7fbdd306a7d44e836c9a298f90652, type: 3}
+      propertyPath: m_RootOrder
+      value: 22
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16a7fbdd306a7d44e836c9a298f90652, type: 3}
 --- !u!4 &3376742500499595468
@@ -15774,7 +15779,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 22
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3997216624992393463
 GameObject:
@@ -16652,6 +16657,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5679026587464145302, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5727734423074458432, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
+      propertyPath: m_RootOrder
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 5727734423074458432, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
+      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -37785,7 +37798,7 @@ Transform:
   - {fileID: 5503987302722590316}
   - {fileID: 5503987301602620641}
   m_Father: {fileID: 0}
-  m_RootOrder: 21
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &5503987302134032332
 MeshRenderer:
@@ -63409,6 +63422,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7769895151760185444, guid: 9fd1777936d723049b336b34325529fe, type: 3}
+      propertyPath: m_RootOrder
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 8838062845628013012, guid: 9fd1777936d723049b336b34325529fe, type: 3}
       propertyPath: m_Name
       value: Bunny_Purple

@@ -12,6 +12,7 @@ public class Monster : MonoBehaviour
     [Header("몬스터 정보")]
     public int currentHealth;
     public int monsterColor;
+    public int damage = 1;
     public bool doDie;
 
 
@@ -72,6 +73,24 @@ public class Monster : MonoBehaviour
 
         FixPosition(transform.position); // 현재 위치로 고정
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            GameObject playerObject = other.gameObject;
+            Player playerScript = playerObject.GetComponent<Player>();
+
+            // 플레이어 스크립트가 존재하면 플레이어의 체력을 감소시킴
+            if (playerScript != null)
+            {
+                if(!doDie)
+                {
+                    playerScript.OnDamage(damage);
+                }
+            }
+        }
     }
 
     public void FixPosition(Vector3 desiredPosition)
