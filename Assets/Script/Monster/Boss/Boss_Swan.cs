@@ -4,7 +4,13 @@ using MoreMountains.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using TMPro;
 using UnityEngine;
+
+// #. 기억!!!
+// 보스는 이동할 때를 제외하면 플레이어를 바라보지 않음, 6개의 각 포인트에 위치할 때 바라보는 각도를 수정해줘야 함
+// 보스가 사용하는 공격 관련 기믹 함수는 이름을 Shoot으로 시작
+// 모빌 생성 기믹에 떨어질 위치를 알려주지 않는 것은 백조의 날개짓 애니메이션으로 시전 한다는 걸 알려줄 것이기 때문이다.
 
 public class Boss_Swan : MonoBehaviour
 {
@@ -33,16 +39,37 @@ public class Boss_Swan : MonoBehaviour
     private bool isFlashing;
 
     [Header("보스 관련 프리펩 / 정보들")]
+    public Transform position_FeildCenter;
     public Transform[] position_nest;
     public Transform position_Mouse;
 
+    // #. 이동 관련
+    public int nowpositionNum; // 현재 포지션 위치, 0이 1번 위치임
+    public float moveSpeed; // 이동 속도
+
+
+
     // #. 기본 공격
-    public GameObject bullet_Simple;
-    public float bulletSpeed = 10.0f;
+    public GameObject bullet_Simple; // 기본 탄환
+    public float bulletSpeed;
+
 
     // #. 색 탄환 공격
-    public GameObject[] bullet_Color;
-    public float bulletSpeed_Color = 10.0f;
+    public GameObject[] bullet_Color; // 색상 탄환 / 1-파랑 탄환 / 2-주황 탄환 / 3-보라 탄환
+    public float bulletSpeed_Color;
+
+
+    // #. 가시 장판 공격
+    public GameObject thorn;
+    public GameObject thorn_alrm;
+    public float fieldRadius_thorn;  // 필드의 반지름
+    public int thornCount;      // 생성할 가시 장판 개수
+
+
+    // #. 모빌 떨어뜨리기
+    public GameObject mobile;
+    public float fieldRadius_mobile;  // 필드의 반지름
+    public int mobileCnt;   // 생성할 모빌 개수
 
 
     private void Awake()
@@ -50,15 +77,15 @@ public class Boss_Swan : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>(); // GameManager를 찾아서 할당
         stagemanager = FindObjectOfType<StageManager>();
 
-        if (renderer != null)
-        {
-            monsterMaterial = renderer.material;
-            originalColor = monsterMaterial.GetColor("_BaseColor"); // 원래 색상 저장
-        }
-        else
-        {
-            Debug.LogError("Renderer 컴포넌트를 찾을 수 없습니다.");
-        }
+        monsterMaterial = renderer.material;
+        originalColor = monsterMaterial.GetColor("_BaseColor"); // 원래 색상 저장
+    }
+
+    private void Start()
+    {
+        // 게임 시작 시 최초로 위치한 장소
+        transform.position = position_nest[0].position;
+        nowpositionNum = 0;
     }
 
 
@@ -68,10 +95,13 @@ public class Boss_Swan : MonoBehaviour
         // #. 패턴 테스트용
         if (Input.GetKeyDown(KeyCode.P))
         {
-            ShootBullet();
+
+             // #. 랜덤 이동 함수
+        
+            StartCoroutine(MoveBoss());
+           
         }
     }
-
 
 
     // #. 데미지 받음 함수
@@ -117,6 +147,7 @@ public class Boss_Swan : MonoBehaviour
         isFlashing = false; // 깜박임 중지
     }
 
+
     // #. 보스 색상 변동 함수
     private void ChangeMaterial(int index)
     {
@@ -139,6 +170,228 @@ public class Boss_Swan : MonoBehaviour
         Destroy(gameObject);
     }
 
+
+    // #. 이동 함수
+    public IEnumerator MoveBoss()
+    {
+        int startindex = nowpositionNum;
+        int endindex;
+        do
+        {
+            endindex = Random.Range(0, 6);
+        } while (endindex == nowpositionNum);
+
+        Debug.Log(startindex + "에서" + endindex + "로 이동");
+
+        Vector3 center = position_FeildCenter.position;
+        Vector3 startPoint = position_nest[startindex].position - center;
+        
+        float assistNum = AsistNum_BossNum(startindex, endindex);
+
+        float journeyDuration = 1.5f * Mathf.Abs(assistNum); // 이동에 걸리는 시간을 조절할 수 있습니다.
+        float anglehow = 60 * assistNum; // 몇도가 이동할지 구할 수 있습니다. 
+
+        if(assistNum > 0)
+        {
+            RotateLeft70Degrees();
+        }
+        else
+        {
+            RotateRight70Degrees();
+        }
+
+        yield return new WaitForSeconds(1.7f);
+
+        float startTime = Time.time;
+
+        while (Time.time < startTime + journeyDuration) // 이동 하는데 얼마의 시간이 걸릴지
+        {
+            float journeyFraction = (Time.time - startTime) / journeyDuration;
+
+            // 몇도를 이동하는지
+            float angle = Mathf.Lerp(0, anglehow, journeyFraction);
+            Vector3 newPosition = center + Quaternion.Euler(0, angle, 0) * startPoint;
+
+            // 연구실 선배님의 도움
+            Vector3 dir = newPosition - transform.position;
+            dir.Normalize();
+            transform.forward = dir;
+
+            transform.position = newPosition;
+            yield return null;
+        }
+
+        Debug.Log(startindex + "에서"+ endindex+ "로 이동");
+
+        transform.position = position_nest[endindex].position;
+        nowpositionNum = endindex;
+
+        LookAtCenterWithTween();
+    }
+    int AsistNum_BossNum(int startindex, int endindex)
+    {
+        bool b_dir = (Random.Range(0, 2) == 0); // true면 시계 방향으로 이동, false면 반시계 방향으로 이동
+
+        if (startindex == 0)
+        {
+            if (endindex == 1)
+            {
+                return b_dir ? 1 : -5;
+            }
+            else if(endindex == 2)
+            {
+                return b_dir ? 2 : -4;
+            }
+            else if (endindex == 3)
+            {
+                return b_dir ? 3 : -3;
+            }
+            else if (endindex == 4)
+            {
+                return b_dir ? 4 : -2;
+            }
+            else if (endindex == 5)
+            {
+                return b_dir ? 5 : -1;
+            }
+        }
+        else if (startindex == 1)
+        {
+            if (endindex == 0)
+            {
+                return b_dir ? 5 : -1;
+            }
+            else if (endindex == 2)
+            {
+                return b_dir ? 1 : -5;
+            }
+            else if (endindex == 3)
+            {
+                return b_dir ? 2 : -4;
+            }
+            else if (endindex == 4)
+            {
+                return b_dir ? 3 : -3;
+            }
+            else if (endindex == 5)
+            {
+                return b_dir ? 4 : -2;
+            }
+        }
+        else if (startindex == 2)
+        {
+            if (endindex == 0)
+            {
+                return b_dir ? 4 : -2;
+            }
+            else if (endindex == 1)
+            {
+                return b_dir ? 5 : -1;
+            }
+            else if (endindex == 3)
+            {
+                return b_dir ? 1 : -5;
+            }
+            else if (endindex == 4)
+            {
+                return b_dir ? 2 : -4;
+            }
+            else if (endindex == 5)
+            {
+                return b_dir ? 3 : -3;
+            }
+        }
+        else if (startindex == 3)
+        {
+            if (endindex == 0)
+            {
+                return b_dir ? 3 : -3;
+            }
+            else if (endindex == 1)
+            {
+                return b_dir ? 4 : -2;
+            }
+            else if (endindex == 2)
+            {
+                return b_dir ? 5 : -1;
+            }
+            else if (endindex == 4)
+            {
+                return b_dir ? 1 : -5;
+            }
+            else if (endindex == 5)
+            {
+                return b_dir ? 2 : -4;
+            }
+        }
+        else if (startindex == 4)
+        {
+            if (endindex == 0)
+            {
+                return b_dir ? 2 : -4;
+            }
+            else if (endindex == 1)
+            {
+                return b_dir ? 3 : -3;
+            }
+            else if (endindex == 2)
+            {
+                return b_dir ? 4 : -2;
+            }
+            else if (endindex == 3)
+            {
+                return b_dir ? 5 : -1;
+            }
+            else if (endindex == 5)
+            {
+                return b_dir ? 1 : -5;
+            }
+        }
+        else if (startindex == 5)
+        {
+            if (endindex == 0)
+            {
+                return b_dir ? 1 : -5;
+            }
+            else if (endindex == 1)
+            {
+                return b_dir ? 2 : -4;
+            }
+            else if (endindex == 2)
+            {
+                return b_dir ? 3 : -3;
+            }
+            else if (endindex == 3)
+            {
+                return b_dir ? 4 : -2;
+            }
+            else if (endindex == 4)
+            {
+                return b_dir ? 5 : -1;
+            }
+        }
+
+        return 0;
+    }
+    
+    // 맵 중앙을 보도록 하는 함수
+    void LookAtCenterWithTween()
+    {
+        transform.DOLookAt(position_FeildCenter.position, 2f).SetEase(Ease.InOutQuad);
+    }
+    // 왼쪽으로 90도 회전하는 함수
+    void RotateLeft70Degrees()
+    {
+        Vector3 currentRotation = transform.eulerAngles + new Vector3(0, -70, 0);
+        transform.DOLocalRotate(currentRotation, 1.6f, RotateMode.FastBeyond360).SetEase(Ease.InOutQuad);
+    }
+
+    // 오른쪽으로 90도 회전하는 함수
+    void RotateRight70Degrees()
+    {
+        Vector3 currentRotation = transform.eulerAngles + new Vector3(0, 70, 0);
+        transform.DOLocalRotate(currentRotation, 1.6f, RotateMode.FastBeyond360).SetEase(Ease.InOutQuad);
+    }
 
 
 
@@ -178,42 +431,98 @@ public class Boss_Swan : MonoBehaviour
     // #. 컬러 공격
     public void ShootColorBullet()
     {
-        if (player != null && bullet_Color != null && position_Mouse != null)
+        if (bullet_Color != null && position_Mouse != null)
         {
-            // 보스 입 위치 (position_Mouse)
             Vector3 bossMouthPosition = position_Mouse.position;
 
-            // 총알을 보스의 입 위치에 랜덤한 색상의 총알을 생성
-            int randomNum = Random.Range(0, 3);
-            GameObject newBullet = Instantiate(bullet_Color[randomNum], bossMouthPosition, Quaternion.identity);
+            // 부채꼴 각도 설정
+            float angleInterval = 40f;
 
-            // 총알을 플레이어 방향으로 발사
-            if (player.transform != null)
+            for (int i = -1; i <= 1; i++)
             {
-                Vector3 direction = (player.transform.position - bossMouthPosition).normalized;
+                int randomNum = Random.Range(0, 3); // 랜덤 총알 선택
+                float currentAngle = i * angleInterval;
+
+                GameObject newBullet = Instantiate(bullet_Color[randomNum], bossMouthPosition, Quaternion.identity);
                 Rigidbody bulletRigidbody = newBullet.GetComponent<Rigidbody>();
 
                 if (bulletRigidbody != null)
                 {
-                    // 총알에 힘을 가해 속도 조절
-                    bulletRigidbody.velocity = direction * bulletSpeed;
+                    Vector3 direction = Quaternion.Euler(0, currentAngle, 1) * new Vector3(0, 1, -1f);
+                    bulletRigidbody.velocity = direction * bulletSpeed_Color;
                 }
             }
         }
     }
+    
+    // #. 가시 장판 공격
+    public void ShootThorn()
+    {
+        // 진짜 가시를 생성하는 코루틴 호출
+        StartCoroutine(SpawnThorns());
+    }
+    IEnumerator SpawnThorns()
+    {
+        Vector3[] thornPositions = new Vector3[thornCount]; // 가시 장판 위치를 저장하는 배열
 
+        for (int i = 0; i < thornCount; i++)
+        {
+            float randomAngle = Random.Range(0f, 360f);
+            float radianAngle = randomAngle * Mathf.Deg2Rad;
 
+            // 원 안의 랜덤한 위치 계산 (0부터 반지름까지)
+            float randomRadius = Random.Range(0f, fieldRadius_thorn);
+            Vector3 spawnPosition = position_FeildCenter.position + new Vector3(Mathf.Cos(radianAngle), 0, Mathf.Sin(radianAngle)) * randomRadius;
 
+            thornPositions[i] = spawnPosition; // 위치를 배열에 저장
+        }
 
+        // 가시 생성 알림
+        for (int i = 0; i < thornCount; i++)
+        {
+            GameObject thorn_alrm_1 = Instantiate(thorn_alrm, thornPositions[i], Quaternion.identity);
 
+            // 여기에서 1번 가시 장판 오브젝트에 추가한 스크립트를 호출하거나 설정할 수 있습니다.
+        }
 
+        yield return new WaitForSeconds(1.5f);  // 2초 대기
 
+        // 가시 생성
+        for (int i = 0; i < thornCount; i++)
+        {
+            // 원래 위치 가져오기
+            Vector3 originalPosition = thornPositions[i];
+            originalPosition.y = -8.0f; // 원하는 높이로 조정
+            GameObject thorn_ = Instantiate(thorn, originalPosition, Quaternion.identity);
+        }
+    }
 
+    // #. 모빌 떨어뜨리기 공격
+    public void ShootMobile()
+    {
+        Vector3[] thornPositions = new Vector3[mobileCnt]; // 가시 장판 위치를 저장하는 배열
 
+        for (int i = 0; i < mobileCnt; i++)
+        {
+            float randomAngle = Random.Range(0f, 360f);
+            float radianAngle = randomAngle * Mathf.Deg2Rad;
 
+            // 원 안의 랜덤한 위치 계산 (0부터 반지름까지)
+            float randomRadius = Random.Range(0f, fieldRadius_mobile);
+            Vector3 spawnPosition = position_FeildCenter.position + new Vector3(Mathf.Cos(radianAngle), 0, Mathf.Sin(radianAngle)) * randomRadius;
 
+            thornPositions[i] = spawnPosition; // 위치를 배열에 저장
+        }
 
+        // 가시 생성 알림
+        for (int i = 0; i < mobileCnt; i++)
+        {
+            Vector3 originalPosition = thornPositions[i];
+            originalPosition.y = 60.0f; // 원하는 높이로 조정
+            GameObject mobile_ = Instantiate(mobile, originalPosition, Quaternion.identity);
+        }
 
+    }
 
 
 

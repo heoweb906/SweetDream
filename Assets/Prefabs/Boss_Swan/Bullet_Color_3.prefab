@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 1754418941783397398}
   - component: {fileID: 1754418941783397399}
   - component: {fileID: 1754418941783397396}
+  - component: {fileID: 4224272479063901564}
   m_Layer: 0
   m_Name: Bullet_Color_3
   m_TagString: Monster
@@ -4974,4 +4975,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  b_colloerBullet: 1
+  damageMonster: 0
   numColor: 3
+  guideMissle: {fileID: 4224272479063901564}
+--- !u!114 &4224272479063901564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754418941783397397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9e85d0dead2f6143bd80d1aff2b62c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 20
+  rotationSpeed: 70
+  b_isGuided: 0
