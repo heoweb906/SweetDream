@@ -38,39 +38,59 @@ public class Boss_Swan : MonoBehaviour
     private Tweener colorTween;
     private bool isFlashing;
 
-    [Header("보스 관련 프리펩 / 정보들")]
+    [Header("보스 Posiont 관련")]
     public Transform position_FeildCenter;
     public Transform[] position_nest;
-    public Transform position_Mouse;
+    public Transform position_Mouse; // 보스의 입의 위치, 탄환이 발사되는 장소
+    [Space(15f)]
 
-    // #. 이동 관련
+    [Header("보스 알고리즘")]
+    public bool isBossStart; // 보스전 시작
+    public bool isPattern; // 하나의 행동을 취하고 있는지, 다음 행동을 넘어갈 때 사용할 거임
+    public int nowPatternNum = 1;  // 지금 이동 관련 기믹을 쓰고 있는지, 공격 관련 기믹을 쓰고 있는지   / 1-이동 관련 기믹 / 2-공격 관련 기믹
+    public bool isMoving; // 이동 중인 상태인지
+    public bool isAttacking; // 공격 중인 상태인지
+    public bool isGrogging; // 그로기 상태인지
+    [Space(15f)]
+
+    [Header("이동 관련")]
     public int nowpositionNum; // 현재 포지션 위치, 0이 1번 위치임
     public float moveSpeed; // 이동 속도
+    [Space(15f)]
 
+    [Header("돌진 관련")]
+    public float rushSpeed;  // 돌진 속도
+    public float slowdownDistance;
+    private float currentMoveSpeed;
+    [Space(15f)]
 
-
-    // #. 기본 공격
+    [Header("기본 공격 관련")]
     public GameObject bullet_Simple; // 기본 탄환
     public float bulletSpeed;
+    [Space(15f)]
 
+    [Header("모빌 패턴 관련")]
+    public GameObject mobile;
+    public float fieldRadius_mobile;  // 필드의 반지름
+    public int mobileCnt;   // 생성할 모빌 개수
+    [Space(15f)]
 
-    // #. 색 탄환 공격
+    [Header("즉사기 관련")]
+    public GameObject diePlate;
+    public GameObject diePlate_alrm;
+    [Space(15f)]
+
+    [Header("유도탄 관련")]
     public GameObject[] bullet_Color; // 색상 탄환 / 1-파랑 탄환 / 2-주황 탄환 / 3-보라 탄환
     public float bulletSpeed_Color;
+    [Space(15f)]
 
-
-    // #. 가시 장판 공격
+    [Header("가시 장판 관련")]
     public GameObject thorn;
     public GameObject thorn_alrm;
     public float fieldRadius_thorn;  // 필드의 반지름
     public int thornCount;      // 생성할 가시 장판 개수
-
-
-    // #. 모빌 떨어뜨리기
-    public GameObject mobile;
-    public float fieldRadius_mobile;  // 필드의 반지름
-    public int mobileCnt;   // 생성할 모빌 개수
-
+    
 
     private void Awake()
     {
@@ -86,25 +106,101 @@ public class Boss_Swan : MonoBehaviour
         // 게임 시작 시 최초로 위치한 장소
         transform.position = position_nest[0].position;
         nowpositionNum = 0;
+
+        Invoke("BossStart",3f);
+    }
+    public void BossStart()
+    {
+        isBossStart = true;
     }
 
 
 
-    public void Update()
+    
+    private void Update()
     {
         // #. 패턴 테스트용
         if (Input.GetKeyDown(KeyCode.P))
         {
-
-             // #. 랜덤 이동 함수
-        
+            ShootDiePlate();
+            //StartCoroutine(RushBoss()); 
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
             StartCoroutine(MoveBoss());
-           
         }
     }
 
+    private void FixedUpdate()
+    {
+        BoosAlgorithm();
+    }
 
-    // #. 데미지 받음 함수
+
+    // #. 보스 알고리즘
+    private void BoosAlgorithm()
+    {
+        if (isBossStart)
+        {
+            if (!isPattern && nowPatternNum == 1)
+            {
+                isPattern = true;
+                nowPatternNum = 2;
+
+                int randomFunction = Random.Range(1, 5);
+                switch (randomFunction)
+                {
+                    case 1:
+                        Debug.Log("모빌 생성");
+                        ShootMobile();
+                        break;
+                    case 2:
+                        Debug.Log("즉사기 시작");
+                        ShootDiePlate();
+                        break;
+                    case 3:
+                        Debug.Log("유도탄 생성");
+                        ShootColorBullet();
+                        break;
+                    case 4:
+                        Debug.Log("가시 생성");
+                        ShootThorn();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+
+            if (!isPattern && nowPatternNum == 2)
+            {
+                isPattern = true;
+                nowPatternNum = 1;
+
+                int randomFunction = Random.Range(1, 3);
+                switch (randomFunction)
+                {
+                    case 1:
+                        Debug.Log("이동");
+                        StartCoroutine(MoveBoss());
+                        break;
+                    case 2:
+                        Debug.Log("돌진");
+                        StartCoroutine(RushBoss());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    private void PatternOff()
+    {
+        isPattern = false;
+    }
+
+
+    // #. 데미지 받음 함수 , 절대 private로 하지 마라
     public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
@@ -147,7 +243,6 @@ public class Boss_Swan : MonoBehaviour
         isFlashing = false; // 깜박임 중지
     }
 
-
     // #. 보스 색상 변동 함수
     private void ChangeMaterial(int index)
     {
@@ -171,8 +266,13 @@ public class Boss_Swan : MonoBehaviour
     }
 
 
+
+
+
+
+
     // #. 이동 함수
-    public IEnumerator MoveBoss()
+    private IEnumerator MoveBoss()
     {
         int startindex = nowpositionNum;
         int endindex;
@@ -186,23 +286,24 @@ public class Boss_Swan : MonoBehaviour
         Vector3 center = position_FeildCenter.position;
         Vector3 startPoint = position_nest[startindex].position - center;
         
-        float assistNum = AsistNum_BossNum(startindex, endindex);
+        float assistNum = AsistNum_MoveBoss(startindex, endindex);
 
         float journeyDuration = 1.5f * Mathf.Abs(assistNum); // 이동에 걸리는 시간을 조절할 수 있습니다.
         float anglehow = 60 * assistNum; // 몇도가 이동할지 구할 수 있습니다. 
 
         if(assistNum > 0)
         {
-            RotateLeft70Degrees();
+            RotateBossDegrees(-90f, 1.6f); // 90도 회전
         }
         else
         {
-            RotateRight70Degrees();
+            RotateBossDegrees(90f, 1.6f); // 90도 회전
         }
 
         yield return new WaitForSeconds(1.7f);
 
         float startTime = Time.time;
+        float elapsedTime = 0f;
 
         while (Time.time < startTime + journeyDuration) // 이동 하는데 얼마의 시간이 걸릴지
         {
@@ -218,6 +319,15 @@ public class Boss_Swan : MonoBehaviour
             transform.forward = dir;
 
             transform.position = newPosition;
+
+            // 이동 중에 0.5초마다 ShootBullet 함수 호출
+            elapsedTime += Time.deltaTime;
+            if (elapsedTime >= 0.5f)
+            {
+                ShootBullet();
+                elapsedTime = 0f;
+            }
+
             yield return null;
         }
 
@@ -227,8 +337,10 @@ public class Boss_Swan : MonoBehaviour
         nowpositionNum = endindex;
 
         LookAtCenterWithTween();
+
+        Invoke("PatternOff", 3f);
     }
-    int AsistNum_BossNum(int startindex, int endindex)
+    int AsistNum_MoveBoss(int startindex, int endindex)
     {
         bool b_dir = (Random.Range(0, 2) == 0); // true면 시계 방향으로 이동, false면 반시계 방향으로 이동
 
@@ -373,32 +485,73 @@ public class Boss_Swan : MonoBehaviour
 
         return 0;
     }
-    
-    // 맵 중앙을 보도록 하는 함수
-    void LookAtCenterWithTween()
+
+    // #. 돌진 함수
+    private IEnumerator RushBoss()
     {
-        transform.DOLookAt(position_FeildCenter.position, 2f).SetEase(Ease.InOutQuad);
+        int targetIndex = AsistNum_RushBoss(nowpositionNum);
+
+
+
+        Vector3 startPosition = transform.position;
+        Vector3 targetPosition = position_nest[targetIndex].position;
+        float journeyLength = Vector3.Distance(startPosition, targetPosition);
+        float startTime = Time.time;
+
+        while (transform.position != targetPosition)
+        {
+            float distanceCovered = (Time.time - startTime) * currentMoveSpeed;
+            float journeyFraction = distanceCovered / journeyLength;
+
+            // 서서히 느려지도록 가중치 조절
+            float slowdownFactor = Mathf.Clamp01(journeyFraction / (journeyLength / slowdownDistance));
+            currentMoveSpeed = Mathf.Lerp(rushSpeed, 0, slowdownFactor);
+
+            transform.position = Vector3.Lerp(startPosition, targetPosition, journeyFraction);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1.0f);
+        transform.position = position_nest[targetIndex].position;
+        nowpositionNum = targetIndex;
+
+        yield return new WaitForSeconds(0.5f);
+        LookAtCenterWithTween();
+        Invoke("PatternOff", 3f);
+
     }
-    // 왼쪽으로 90도 회전하는 함수
-    void RotateLeft70Degrees()
+    int AsistNum_RushBoss(int nowpositionNum)
     {
-        Vector3 currentRotation = transform.eulerAngles + new Vector3(0, -70, 0);
-        transform.DOLocalRotate(currentRotation, 1.6f, RotateMode.FastBeyond360).SetEase(Ease.InOutQuad);
+        if(nowpositionNum == 0)
+        {
+            return 3;
+        }
+        else if(nowpositionNum == 1)
+        {
+            return 4;
+        }
+        else if (nowpositionNum == 2)
+        {
+            return 5;
+        }
+        else if (nowpositionNum == 3)
+        {
+            return 0;
+        }
+        else if (nowpositionNum == 4)
+        {
+            return 1;
+        }
+        else if (nowpositionNum == 5)
+        {
+            return 2;
+        }
+        return 0;
     }
-
-    // 오른쪽으로 90도 회전하는 함수
-    void RotateRight70Degrees()
-    {
-        Vector3 currentRotation = transform.eulerAngles + new Vector3(0, 70, 0);
-        transform.DOLocalRotate(currentRotation, 1.6f, RotateMode.FastBeyond360).SetEase(Ease.InOutQuad);
-    }
-
-
-
 
 
     // #. 기본 공격
-    public void ShootBullet()
+    private void ShootBullet()
     {
         if (player != null && bullet_Simple != null && position_Mouse != null)
         {
@@ -428,8 +581,72 @@ public class Boss_Swan : MonoBehaviour
         }
     }
 
-    // #. 컬러 공격
-    public void ShootColorBullet()
+    // #. 모빌 떨어뜨리기 공격 - 1
+    private void ShootMobile()
+    {
+        Vector3[] thornPositions = new Vector3[mobileCnt]; // 가시 장판 위치를 저장하는 배열
+
+        for (int i = 0; i < mobileCnt; i++)
+        {
+            float randomAngle = Random.Range(0f, 360f);
+            float radianAngle = randomAngle * Mathf.Deg2Rad;
+
+            // 원 안의 랜덤한 위치 계산 (0부터 반지름까지)
+            float randomRadius = Random.Range(0f, fieldRadius_mobile);
+            Vector3 spawnPosition = position_FeildCenter.position + new Vector3(Mathf.Cos(radianAngle), 0, Mathf.Sin(radianAngle)) * randomRadius;
+
+            thornPositions[i] = spawnPosition; // 위치를 배열에 저장
+        }
+
+        // 가시 생성 알림
+        for (int i = 0; i < mobileCnt; i++)
+        {
+            Vector3 originalPosition = thornPositions[i];
+            originalPosition.y = 60.0f; // 원하는 높이로 조정
+            GameObject mobile_ = Instantiate(mobile, originalPosition, Quaternion.identity);
+        }
+
+        Invoke("PatternOff", 3f);
+
+    }
+
+    // #. 즉사기 패턴 - 2
+    private void ShootDiePlate()
+    {
+        StartCoroutine(SpawnDiePlate());
+    }
+    private IEnumerator SpawnDiePlate()
+    {
+        float randomAngle = Random.Range(0f, 360f);
+        float radianAngle = randomAngle * Mathf.Deg2Rad;
+
+        // 원 안의 랜덤한 위치 계산 (0부터 반지름까지)
+        float randomRadius = Random.Range(0f, fieldRadius_thorn);
+        Vector3 spawnPosition = position_FeildCenter.position + new Vector3(Mathf.Cos(radianAngle), 0, Mathf.Sin(radianAngle)) * randomRadius;
+
+        GameObject diePlate_alrm_ = Instantiate(diePlate_alrm, spawnPosition, Quaternion.identity);
+
+
+        yield return new WaitForSeconds(4.0f);  // 2초 대기
+        diePlate.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        diePlate.SetActive(false);
+        yield return new WaitForSeconds(0.1f);
+        diePlate.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        diePlate.SetActive(false);
+        yield return new WaitForSeconds(0.1f);
+        diePlate.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        diePlate.SetActive(false);
+        yield return new WaitForSeconds(0.1f);
+
+        diePlate_alrm_.SetActive(false);
+        Invoke("PatternOff", 3.0f);
+    }
+
+    // #. 유도탄 공격 - 3
+    private void ShootColorBullet()
     {
         if (bullet_Color != null && position_Mouse != null)
         {
@@ -452,11 +669,14 @@ public class Boss_Swan : MonoBehaviour
                     bulletRigidbody.velocity = direction * bulletSpeed_Color;
                 }
             }
+
+
+            Invoke("PatternOff", 3f);
         }
     }
-    
-    // #. 가시 장판 공격
-    public void ShootThorn()
+
+    // #. 가시 장판 공격 - 4
+    private void ShootThorn()
     {
         // 진짜 가시를 생성하는 코루틴 호출
         StartCoroutine(SpawnThorns());
@@ -495,36 +715,26 @@ public class Boss_Swan : MonoBehaviour
             originalPosition.y = -8.0f; // 원하는 높이로 조정
             GameObject thorn_ = Instantiate(thorn, originalPosition, Quaternion.identity);
         }
+
+        Invoke("PatternOff", 3.0f);
     }
 
-    // #. 모빌 떨어뜨리기 공격
-    public void ShootMobile()
+
+
+
+
+    // 맵 중앙을 보도록 하는 함수
+    private void LookAtCenterWithTween()
     {
-        Vector3[] thornPositions = new Vector3[mobileCnt]; // 가시 장판 위치를 저장하는 배열
-
-        for (int i = 0; i < mobileCnt; i++)
-        {
-            float randomAngle = Random.Range(0f, 360f);
-            float radianAngle = randomAngle * Mathf.Deg2Rad;
-
-            // 원 안의 랜덤한 위치 계산 (0부터 반지름까지)
-            float randomRadius = Random.Range(0f, fieldRadius_mobile);
-            Vector3 spawnPosition = position_FeildCenter.position + new Vector3(Mathf.Cos(radianAngle), 0, Mathf.Sin(radianAngle)) * randomRadius;
-
-            thornPositions[i] = spawnPosition; // 위치를 배열에 저장
-        }
-
-        // 가시 생성 알림
-        for (int i = 0; i < mobileCnt; i++)
-        {
-            Vector3 originalPosition = thornPositions[i];
-            originalPosition.y = 60.0f; // 원하는 높이로 조정
-            GameObject mobile_ = Instantiate(mobile, originalPosition, Quaternion.identity);
-        }
-
+        transform.DOLookAt(position_FeildCenter.position, 2f).SetEase(Ease.InOutQuad);
     }
 
-
+    // 원하는 각도만큼 매개변수 - 회전각도, 회전속도
+    private void RotateBossDegrees(float angle, float speedAngle)
+    {
+        Vector3 currentRotation = transform.eulerAngles + new Vector3(0, angle, 0);
+        transform.DOLocalRotate(currentRotation, speedAngle, RotateMode.FastBeyond360).SetEase(Ease.InOutQuad);
+    }
 
 
 
@@ -532,7 +742,7 @@ public class Boss_Swan : MonoBehaviour
 
     // #. 패턴 확인용으로 어떤 패턴을 쓰고 있는지 확인하기 위한 함수임
     // 구체 1개 - 공격관련     구체 2개 - 이동 관련      구체 3개 - 색상 변동
-    public void PatternCheckSphere(int index)
+    private void PatternCheckSphere(int index)
     {
         for (int i = 0; i < patternSphere.Length; i++)
         {
@@ -550,24 +760,9 @@ public class Boss_Swan : MonoBehaviour
     }
 
 
-    // #. 랜덤한 패턴을 실행시키는 함수
-    private void RandomPattern()
-    {
-        int randomNum = Random.Range(0, 5);
-        switch (randomNum)
-        {
-            case 0:
-                
-                break;
-            //case 1:
-            //    CallFunction2();
-            //    break;
-            //case 2:
-            //    CallFunction3();
-            //    break;
-        }
-    }
 
+
+   
 
 
     //private void OnTriggerEnter(Collider other)

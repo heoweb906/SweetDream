@@ -20,10 +20,10 @@ public class Player : MonoBehaviour
     [Header("플레이어 정보")]
     public int hp = 4; // 플레이어 체력
     public int weaponNumber; // 1 = 빨강, 2 = 노랑, 3 = 파랑
-    public float moveSpeed;  // 플레이어 스피드
-    public float jumpForce; // 점프 힘
-    public float rollSpeed = 40f; // 구르기 속도
-    public float rollDuration = 0.5f; // 구르기 지속 시간
+    public float moveSpeed = 20;  // 플레이어 스피드
+    public float jumpForce = 210; // 점프 힘
+    public float rollSpeed = 30f; // 구르기 속도
+    public float rollDuration = 0.3f; // 구르기 지속 시간
     public int attackDamage = 10;    // 공격 데미지
 
     public bool isDie;
@@ -66,8 +66,6 @@ public class Player : MonoBehaviour
     // mmfPlayer_Camera?.PlayFeedbacks();
 
 
-
-
     // #. 플레이어 키 입력
     private bool jDown; // 점프 키
     private bool wDown; // 웅크리기 키
@@ -75,10 +73,11 @@ public class Player : MonoBehaviour
     private bool rDown; // 재장전 키
     private int key_weapon = 1;
 
-
+    // #. 플레이어 상태
     private bool isJumping; // 점프 중인지 여부를 나타내는 변수
     private bool isRolling; // 구르고 있는 중인지 여부를 나타내는 변수
     private bool isDamaging; // 공격을 받아 무적인 상태
+    public bool isSafeZone; // 보스 즉사 장판기에서 안전한 장소에 있는지
 
     public Rigidbody rigid;
     public Camera mainCamera;
@@ -94,10 +93,8 @@ public class Player : MonoBehaviour
     private bool isChangingLayer = false;
     private int playerLayer; // Player의 초기 레이어
 
-
     // #. 레이 관련
     private Vector3 rayDirection; // 레이캐스트가 발사된 방향을 저장하는 변수
-
 
 
     private void Awake()
@@ -151,6 +148,12 @@ public class Player : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        // 플레이어에게 강한 중력을 줌
+        rigid.AddForce(Vector3.down * 60f, ForceMode.Acceleration);
     }
 
 
@@ -216,11 +219,10 @@ public class Player : MonoBehaviour
         // Rigidbody에 속도 적용
         Vector3 newVelocity = transform.forward * moveVec.z * moveSpeed + transform.right * moveVec.x * moveSpeed;
         newVelocity.y = rigid.velocity.y; // 현재 수직 속도 유지
-        rigid.velocity = newVelocity;
-
-        // 플레이어에게 강한 중력을 줌
-        rigid.AddForce(Vector3.down * 15f, ForceMode.Acceleration);
-
+        if(!isDie)
+        {
+            rigid.velocity = newVelocity;
+        }
 
         // 점프 체크
         if (jDown && !isJumping)
@@ -228,6 +230,7 @@ public class Player : MonoBehaviour
             Jump();
         }
 
+        // 구르기 체크
         if (shiftDown && !isRolling && gameManager.rhythmCorrect)
         {
             isRolling = true;
@@ -359,17 +362,16 @@ public class Player : MonoBehaviour
             }
         }
 
-
         // #. 죽음 함수 기능
-        if(hp == 0 && !isDie)
+        if(hp <= 0 && !isDie)
         {
             isDie = true;
             if(ingame_UI.isSettingPanel)
             {
                 ingame_UI.OnOffSettingPanel_PlayerDie();  // 죽으면 활성화되어 있는 설정창을 꺼줌
             }
-            
-            StartCoroutine(DoDie());
+
+            PlayerDie();
         }
     }
 
@@ -388,6 +390,10 @@ public class Player : MonoBehaviour
         isChangingLayer = false;
     }
 
+    public void PlayerDie()
+    {
+        StartCoroutine(DoDie());
+    }
     public IEnumerator DoDie()
     {
         mmfPlayer_OnDie?.PlayFeedbacks();

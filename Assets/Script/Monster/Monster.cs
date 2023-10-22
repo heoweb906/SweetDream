@@ -53,7 +53,6 @@ public class Monster : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-
             Invoke("Die", 3.0f);
         }
 
@@ -72,6 +71,9 @@ public class Monster : MonoBehaviour
         stagemanager.MonsterCount--;
 
         FixPosition(transform.position); // 현재 위치로 고정
+
+        
+
         Destroy(gameObject);
     }
 

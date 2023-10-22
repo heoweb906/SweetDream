@@ -56,11 +56,11 @@ public class Loading_Lobby : MonoBehaviour
 
             if (progressbar.value >= 1f)
             {
-                text_Loading.text = "로딩 완료";
+                text_Loading.text = "로딩 완료 - 아무 키나 눌러서 시작";
             }
 
 
-            if (Input.GetKeyDown(KeyCode.Space) && progressbar.value >= 1f && operation.progress >= 0.9f)
+            if (Input.anyKeyDown && progressbar.value >= 1f && operation.progress >= 0.9f)
             {
                 operation.allowSceneActivation = true;
                 Play();

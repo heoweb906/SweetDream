@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
         RhythmImage_sub.transform.SetParent(rhythmPosition_sub.transform);
         RhythmImage_sub.rectTransform.anchoredPosition = Vector2.zero;
         RhythmImage_sub.color = new Color(1f, 0f, 0f, 0f); // 초기 알파값 0, 빨간색으로 설정
-        Tweener rhythmTween_sub = RhythmImage_sub.rectTransform.DOAnchorPosX(moveDistance, iconSpeed - 0.05f).SetEase(Ease.Linear);
+        Tweener rhythmTween_sub = RhythmImage_sub.rectTransform.DOAnchorPosX(moveDistance, iconSpeed - 0.03f).SetEase(Ease.Linear);
 
         rhythmTween_sub.OnComplete(() =>
         {

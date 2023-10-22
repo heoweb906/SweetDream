@@ -654,7 +654,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cfc88d2daef571443bc0ce4391118d90, type: 2}
+  - {fileID: 2100000, guid: d5f71075ccd84724a90cdd574277eded, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -869,10 +869,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 5
-  m_Acceleration: 50
+  m_Speed: 7
+  m_Acceleration: 70
   avoidancePriority: 50
-  m_AngularSpeed: 720
+  m_AngularSpeed: 750
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -895,7 +895,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
   stagemanager: {fileID: 0}
-  currentHealth: 20
+  currentHealth: 60
   monsterColor: 1
   damage: 1
   doDie: 0
@@ -906,6 +906,7 @@ MonoBehaviour:
   isChase: 1
   isAttack: 0
   anim: {fileID: 8258908995130436612}
+  player: {fileID: 0}
   collider: {fileID: 5257874916670975156}
 --- !u!1 &5257874918369903939
 GameObject:

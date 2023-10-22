@@ -9,6 +9,7 @@ TagManager:
   - RhythmIcon
   - Boss
   - Wall
+  - PlayerStep
   layers:
   - Default
   - TransparentFX
@@ -33,7 +34,7 @@ TagManager:
   - 
   - 
   - MonsterSteop
-  - 
+  - MonsterDie
   - 
   - 
   - 

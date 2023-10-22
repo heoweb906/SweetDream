@@ -119,7 +119,7 @@ public class CutSceneBrain : MonoBehaviour
             // 현재 컷 보여주기
             cutInfos[cutIndex].DoEnter();
 
-            if (cutIndex == 29) // 마지막 컷신 순서
+            if (cutIndex == 30) // 마지막 컷신 순서
             {
                 StartCoroutine(DelayedBlinkText());
                 
@@ -127,15 +127,15 @@ public class CutSceneBrain : MonoBehaviour
 
 
             // #. 컷씬 애니메이션 관련
-            if(cutIndex == 10 || cutIndex == 26 || cutIndex == 27 || cutIndex == 28)  // 위아래 애니메이션을 줄 컷씬 번호들
+            if(cutIndex == 11 || cutIndex == 27 || cutIndex == 28 || cutIndex == 29)  // 위아래 애니메이션을 줄 컷씬 번호들
             {
                 cutInfos[cutIndex].DoUpDownAnimation_Position();
             }
-            if (cutIndex == 27 || cutIndex == 29)  // 좌우로 움직이는 컷들
+            if (cutIndex == 29 || cutIndex == 30)  // 좌우로 움직이는 컷들
             {
                 cutInfos[cutIndex].DoUpDownAnimation_Position();
             }
-            if (cutIndex == 6 || cutIndex == 9 || cutIndex == 11|| cutIndex == 27)  // 좌우로 기울이는 컷들
+            if (cutIndex == 7 || cutIndex == 10 || cutIndex == 12 || cutIndex == 29)  // 좌우로 기울이는 컷들
             {
                 cutInfos[cutIndex].DoLeftRightAnimation_Angle();
             }
@@ -207,7 +207,7 @@ public class CutSceneBrain : MonoBehaviour
         }
 
         yield return new WaitForSeconds(1.0f);
-        SceneManager.LoadScene("Loading_Menu");
+        SceneManager.LoadScene("Loading_Lobby");
     }
 
 }
