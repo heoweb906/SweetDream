@@ -8,6 +8,8 @@ public class Boss_Bullet : MonoBehaviour
     public bool b_colloerBullet;
     public int damageMonster;
 
+    public bool b_PlayerHit = false;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -26,7 +28,7 @@ public class Boss_Bullet : MonoBehaviour
 
         if (other.CompareTag("Boss"))
         {
-            if(b_colloerBullet)
+            if (b_colloerBullet && b_PlayerHit)
             {
                 GameObject monsterObject = other.gameObject;
                 Boss_Swan monster = monsterObject.GetComponent<Boss_Swan>();

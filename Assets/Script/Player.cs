@@ -308,6 +308,7 @@ public class Player : MonoBehaviour
                         {
                             // 충돌 지점에서 나가는 방향 벡터를 사용
                             bullet.SetNewDirection(rayDirection);
+                            bullet.b_PlayerHit = true;
                         }
                     }
 
