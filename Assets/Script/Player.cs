@@ -11,6 +11,9 @@ using System.Security.Cryptography;
 
 public class Player : MonoBehaviour
 {
+    // 씬 전환 시 현재 플레이어 HP 정보 업데이트 해야함
+
+
     // 죽거나 메인화면으로 나갈 때 피버타임이 끝나도록 수정해야 함
 
     public GameManager gameManager;
@@ -109,6 +112,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+
+        hp = PlayerPrefs.GetInt("PlayerHp");
+
+
         CamLock(); // 게임 시작 시 카메라 락
         SetPlayerSound(); // 환경 설정에 맞도록 효과음 사운드 조절; 
                           // 메뉴화면의 UI 컨트롤러는 플레이어의 함수를 실행시킬 수 없기 때문에 1번 실행시켜주는 거임
@@ -361,6 +368,10 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(ChangeLayerTemporarily());
             }
+
+
+            // 플레이어의 hp 정보를 저장
+            PlayerPrefs.SetInt("PlayerHp", hp);
         }
 
         // #. 죽음 함수 기능

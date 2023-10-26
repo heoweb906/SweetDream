@@ -5762,6 +5762,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4915345501908439493, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
+      propertyPath: currentHealth
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 4915345501908439546, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
       propertyPath: m_Name
       value: Bunny_Blue (1)
@@ -9484,6 +9488,7 @@ MonoBehaviour:
   mmfPlayer_Camera: {fileID: 670818879}
   mmfPlayer_OnDamage: {fileID: 1944270444}
   mmfPlayer_OnDie: {fileID: 401466745}
+  isSafeZone: 0
   rigid: {fileID: 0}
   mainCamera: {fileID: 963194227}
   gunAnimator: {fileID: 2298140697286304814}
@@ -15808,6 +15813,10 @@ PrefabInstance:
     - target: {fileID: 4915345501908439493, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
       propertyPath: player
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4915345501908439493, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
+      propertyPath: currentHealth
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4915345501908439546, guid: dba084d6074ee9b428965a0bfaea1424, type: 3}
       propertyPath: m_Name
@@ -60917,6 +60926,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7769895151760185447, guid: 9fd1777936d723049b336b34325529fe, type: 3}
+      propertyPath: currentHealth
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 7769895152400515820, guid: 9fd1777936d723049b336b34325529fe, type: 3}
       propertyPath: m_LocalPosition.y
       value: 3.91
@@ -60990,6 +61003,10 @@ PrefabInstance:
     - target: {fileID: 7820163603664001091, guid: 16a7fbdd306a7d44e836c9a298f90652, type: 3}
       propertyPath: player
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7820163603664001091, guid: 16a7fbdd306a7d44e836c9a298f90652, type: 3}
+      propertyPath: currentHealth
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 7820163603664001100, guid: 16a7fbdd306a7d44e836c9a298f90652, type: 3}
       propertyPath: m_RootOrder

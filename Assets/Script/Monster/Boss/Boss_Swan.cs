@@ -857,7 +857,6 @@ public class Boss_Swan : MonoBehaviour
 
 
 
-
     // 맵 중앙을 보도록 하는 함수
     private void LookAtCenterWithTween()
     {
