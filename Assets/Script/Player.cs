@@ -360,7 +360,9 @@ public class Player : MonoBehaviour
         {
             isDamaging = true;
             hp -= dmg;
-            gameManager.ActivateHpImage(hp - 1);
+            gameManager.ActivateHpImage(hp);
+
+
             mmfPlayer_OnDamage?.PlayFeedbacks();
 
             // 레이어 변경이 진행 중이지 않을 때만 실행
@@ -368,7 +370,6 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(ChangeLayerTemporarily());
             }
-
 
             // 플레이어의 hp 정보를 저장
             PlayerPrefs.SetInt("PlayerHp", hp);

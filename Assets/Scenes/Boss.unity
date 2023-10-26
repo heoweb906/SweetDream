@@ -3923,7 +3923,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 893358514}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -7430,7 +7430,7 @@ MonoBehaviour:
   hAxis: 0
   vAxis: 0
   turnSpeed: 0
-  attackRange: 25
+  attackRange: 2000
   attackInterval: 0.15
   soundGun: {fileID: 1239391542}
   soundGun_Fail: {fileID: 2099670513}
@@ -10466,6 +10466,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2e4575668c368c945bbced51d1d59905, type: 2}
   - {fileID: 2100000, guid: e2a3cb7f53a1afd4bb64f8f3f8fbf0fa, type: 2}
   - {fileID: 2100000, guid: a70f87167052b604d93fa8889a4d8b4f, type: 2}
+  takeDamage: 0
   position_FeildCenter: {fileID: 846970725}
   position_nest:
   - {fileID: 816087941}
@@ -10476,6 +10477,7 @@ MonoBehaviour:
   - {fileID: 1504235810}
   position_Mouse: {fileID: 89636345}
   isBossStart: 0
+  isColorChanged: 0
   isPattern: 0
   nowPatternNum: 1
   isMoving: 0

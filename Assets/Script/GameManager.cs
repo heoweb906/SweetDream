@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public PlayerInformation playerInformation;
     public Image[] Pins;
     public Image[] HpBars;
+    public Image[] HpBars_Hit;
     [Space(10f)]
 
 
@@ -227,16 +228,24 @@ public class GameManager : MonoBehaviour
 
     public void ActivateHpImage(int hp) // hp바 업데이트
     {
-
         for (int i = 0; i < HpBars.Length; i++)
         {
             HpBars[i].gameObject.SetActive(false);
+            HpBars_Hit[i].gameObject.SetActive(false);
         }
-        if(hp >= 0)
+        for (int i = 0; i < hp; i++)
         {
-            HpBars[hp].gameObject.SetActive(true);
+            HpBars[i].gameObject.SetActive(true);
         }
-        
+
+        int aaa = 4 - hp;
+
+        for (int i = 0; i < aaa; i++)
+        {
+            HpBars_Hit[i].gameObject.SetActive(true);
+        }
+
+
     }
 
 
@@ -329,12 +338,12 @@ public class GameManager : MonoBehaviour
         else
         {
             // #. 장전 중이 아닐 때는 최대 탄창의 수를 표시
-            cruBulletCount.text = bulletCount.ToString();
+            cruBulletCount.text = bulletCount.ToString() + " / 10";
         }
 
         if (isFever)
         {
-            cruBulletCount.text = "무무한한대대";
+            cruBulletCount.text = "XXX";
         }
     }
 }

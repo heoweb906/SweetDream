@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 54952417}
   - component: {fileID: 54952416}
   - component: {fileID: 54952415}
-  m_Layer: 14
+  m_Layer: 0
   m_Name: Step_2_Nav_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2026,7 +2026,7 @@ GameObject:
   - component: {fileID: 474596194}
   - component: {fileID: 474596193}
   - component: {fileID: 474596192}
-  m_Layer: 14
+  m_Layer: 0
   m_Name: Step_2_Nav_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2525,7 +2525,7 @@ GameObject:
   - component: {fileID: 528269932}
   - component: {fileID: 528269931}
   - component: {fileID: 528269930}
-  m_Layer: 14
+  m_Layer: 0
   m_Name: Step_2_Nav_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3474,9 +3474,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 1
   m_FollowOffset: {x: 0, y: 0, z: -10}
-  m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_XDamping: 0
+  m_YDamping: 0
+  m_ZDamping: 0
   m_AngularDampingMode: 0
   m_PitchDamping: 0
   m_YawDamping: 0
@@ -7163,7 +7163,7 @@ GameObject:
   - component: {fileID: 1579598229}
   - component: {fileID: 1579598228}
   - component: {fileID: 1579598227}
-  m_Layer: 14
+  m_Layer: 0
   m_Name: Step_2_Nav_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7312,7 +7312,7 @@ GameObject:
   - component: {fileID: 1592239198}
   - component: {fileID: 1592239197}
   - component: {fileID: 1592239196}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: PlayerStep
   m_TagString: PlayerStep
   m_Icon: {fileID: 0}
@@ -7623,7 +7623,7 @@ MonoBehaviour:
   hAxis: 0
   vAxis: 0
   turnSpeed: 0
-  attackRange: 25
+  attackRange: 2000
   attackInterval: 0.15
   soundGun: {fileID: 1239391542}
   soundGun_Fail: {fileID: 2099670513}
@@ -7634,6 +7634,7 @@ MonoBehaviour:
   mmfPlayer_Camera: {fileID: 670818879}
   mmfPlayer_OnDamage: {fileID: 1944270444}
   mmfPlayer_OnDie: {fileID: 401466745}
+  isSafeZone: 0
   rigid: {fileID: 0}
   mainCamera: {fileID: 963194227}
   gunAnimator: {fileID: 2298140697286304814}
