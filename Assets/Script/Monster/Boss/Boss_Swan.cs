@@ -337,6 +337,10 @@ public class Boss_Swan : MonoBehaviour
     // #. 이동 함수
     private void MoveBoss()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine); // 이미 실행 중인 코루틴을 중지합니다.
+        }
         currentCoroutine = StartCoroutine(MoveBoss_());
     }
     private IEnumerator MoveBoss_()
@@ -632,7 +636,7 @@ public class Boss_Swan : MonoBehaviour
     {
         Debug.Log("집으로 돌아갑니다");
         transform.DOLookAt(position_nest[0].position, 2f).SetEase(Ease.InOutQuad);
-        yield return new WaitForSeconds(2.2f);
+        yield return new WaitForSeconds(2.0f);
 
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = position_nest[0].position;

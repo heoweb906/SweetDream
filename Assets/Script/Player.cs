@@ -11,9 +11,6 @@ using System.Security.Cryptography;
 
 public class Player : MonoBehaviour
 {
-    // 씬 전환 시 현재 플레이어 HP 정보 업데이트 해야함
-
-
     // 죽거나 메인화면으로 나갈 때 피버타임이 끝나도록 수정해야 함
 
     public GameManager gameManager;
@@ -164,20 +161,7 @@ public class Player : MonoBehaviour
     }
 
 
-    private void Reload()
-    {
-        if(rDown && gameManager.rhythmCorrect && !(gameManager.isReload))
-        {
-            gameManager.isReload = true;
 
-            weapon1.SetActive(false);
-            weapon2.SetActive(false);
-            weapon3.SetActive(false);
-            gameManager.ActivateImage(1);
-
-            soundReload_Out.Play();
-        }
-    }
 
 
     private void GetInput()  // 입력을 받는 함수
@@ -189,32 +173,56 @@ public class Player : MonoBehaviour
         shiftDown = Input.GetButtonDown("Roll");
         rDown = Input.GetButtonDown("Reload");
 
+        
         if(rDown)
         {
             Reload();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if(Input.GetKeyDown(KeyCode.Q))
         {
-            key_weapon = 1;
-            WeaponChange(key_weapon);
+            if(weaponNumber == 1)
+            {
+                key_weapon = 2;
+                WeaponChange(key_weapon);
+            }
+            else if(weaponNumber == 2)
+            {
+                key_weapon = 3;
+                WeaponChange(key_weapon);
+            }
+            else if (weaponNumber == 3)
+            {
+                key_weapon = 1;
+                WeaponChange(key_weapon);
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+
+        if(Input.GetKeyDown(KeyCode.E))
         {
-            key_weapon = 2;
-            WeaponChange(key_weapon);
+            if (weaponNumber == 1)
+            {
+                key_weapon = 3;
+                WeaponChange(key_weapon);
+            }
+            else if (weaponNumber == 2)
+            {
+                key_weapon = 1;
+                WeaponChange(key_weapon);
+            }
+            else if (weaponNumber == 3)
+            {
+                key_weapon = 2;
+                WeaponChange(key_weapon);
+            }
         }
-        else if(Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            key_weapon = 3;
-            WeaponChange(key_weapon);
-        }
+
+
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ingame_UI.OnOffSettingPanel();
         }
-
     }
 
 
@@ -238,7 +246,7 @@ public class Player : MonoBehaviour
         }
 
         // 구르기 체크
-        if (shiftDown && !isRolling && gameManager.rhythmCorrect)
+        if (shiftDown && !isRolling && gameManager.rhythmCorrect && gameManager.canRoll)
         {
             isRolling = true;
             StartCoroutine(PerformRoll());
@@ -247,6 +255,10 @@ public class Player : MonoBehaviour
 
     private IEnumerator PerformRoll()
     {
+        gameManager.canRoll = false;
+        gameManager.rollSkill_Image.fillAmount = 0f;
+        gameManager.RollCoolTime();
+
         // 구르기 동안 이동 속도를 증가시키고, 방향은 현재 이동 방향으로 설정
         soundRoll.Play();
         mmfPlayer_Camera?.PlayFeedbacks();
@@ -275,7 +287,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1") && gameManager.rhythmCorrect && !isDie)
         {
-            if (!(gameManager.isReload) && gameManager.bulletCount > 0)
+            if (gameManager.bulletCount > 0)
             {
                 Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
                 RaycastHit hit;
@@ -326,7 +338,7 @@ public class Player : MonoBehaviour
         }
         else if(Input.GetButtonDown("Fire1") && !(gameManager.rhythmCorrect))   // 만약 틀린 타이밍에 공격하면
         {
-            gameManager.ComboBarDown(20);
+            gameManager.ComboBarDown();
             soundGun_Fail.Play();
         }
     }
@@ -349,6 +361,16 @@ public class Player : MonoBehaviour
             }
         }
         soundMiniGun.Play();
+    }
+
+    // #. 재장전 기능
+    private void Reload()
+    {
+        if (rDown && gameManager.rhythmCorrect)
+        {
+            gameManager.bulletCount = 10;
+            soundReload_Out.Play();
+        }
     }
 
 
@@ -439,6 +461,7 @@ public class Player : MonoBehaviour
         weapon2.SetActive(false);
         weapon3.SetActive(false);
         weapon4_Gatling.SetActive(true);
+
         attackDamage = 3;
     }
 
@@ -453,7 +476,7 @@ public class Player : MonoBehaviour
 
     public void WeaponChange(int number) 
     {
-        if (gameManager.rhythmCorrect && gameManager.isReload)
+        if (gameManager.rhythmCorrect)
         {
             if (number == 1)
             {
@@ -462,9 +485,6 @@ public class Player : MonoBehaviour
                 weapon1.SetActive(true);
                 weapon2.SetActive(false);
                 weapon3.SetActive(false);
-
-                gameManager.isReload = false;
-                gameManager.bulletCount = 10;
             }
             if (number == 2)
             {
@@ -473,9 +493,6 @@ public class Player : MonoBehaviour
                 weapon1.SetActive(false);
                 weapon2.SetActive(true);
                 weapon3.SetActive(false);
-
-                gameManager.isReload = false;
-                gameManager.bulletCount = 10;
             }
             if (number == 3)
             {
@@ -484,9 +501,6 @@ public class Player : MonoBehaviour
                 weapon1.SetActive(false);
                 weapon2.SetActive(false);
                 weapon3.SetActive(true);
-
-                gameManager.isReload = false;
-                gameManager.bulletCount = 10;
             }
 
             gameManager.ActivateImage(number);
@@ -521,16 +535,11 @@ public class Player : MonoBehaviour
             weapon3.SetActive(true);
         }
 
-        if(gameManager.isReload)
-        {
-            weapon1.SetActive(false);
-            weapon2.SetActive(false);
-            weapon3.SetActive(false);
-        }
-
         gameManager.ActivateImage(number);
     }
 
+
+    // #. 플레이어 사운드 세팅
     public void SetPlayerSound()
     {
         soundGun.volume = playerInformation.VolumeEffect;

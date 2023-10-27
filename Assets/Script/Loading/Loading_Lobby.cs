@@ -78,7 +78,6 @@ public class Loading_Lobby : MonoBehaviour
         playerInformation.IsMenu = false;
         playerInformation.IsGame = true;
 
-        gameManager.isReload = false;
 
         if (gameManager.isFever) // @@@@@@@@@@@@@@@ 임시로 피버를 끝나게 해놓은 거임
         {

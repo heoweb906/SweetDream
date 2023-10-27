@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
 
     [Header("총의 상태")]
     public bool rhythmCorrect; // 박자가 맞은 상황인지, 이게 true인 동안에만 키입력을 인정함
-    public bool isReload; // 지금 재장전 중인지
     public int bulletCount; // 남은 총알 개수
     public TMP_Text cruBulletCount;
     [Space(10f)]
@@ -24,7 +23,7 @@ public class GameManager : MonoBehaviour
     [Header("오브젝트")]
     public Canvas canvas;
     public PlayerInformation playerInformation;
-    public Image[] Pins;
+    public GameObject[] Pins;
     public Image[] HpBars;
     public Image[] HpBars_Hit;
     [Space(10f)]
@@ -57,6 +56,10 @@ public class GameManager : MonoBehaviour
     public Image comboBarImage;
     [Space(10f)]
 
+    [Header("구르기")]
+    public bool canRoll = true;
+    public Image rollSkill_Image;
+    [Space(10f)]
 
     [Header("테스트 중")]
     private float timeSinceLastCreation = 0.0f;
@@ -204,25 +207,28 @@ public class GameManager : MonoBehaviour
         rhythmCorrect = false; // 지정된 시간 후에 rhythmCorrect를 다시 false로 설정
     }
 
-
-    public void ActivateImage(int imageIndex)
+    public void ActivateImage(int imageIndex) // 무기 정보 업데이트
     {
-        for (int i = 0; i < Pins.Length; i++) // UI 상에서 어떤 무기를 쓰고 있는지 바늘로 찔러서 알려줌
+        for(int i = 0; i < Pins.Length; i++)
         {
             Pins[i].gameObject.SetActive(false);
         }
 
-        if(imageIndex == 1 && !isReload)
+        if(imageIndex == 1)
         {
             Pins[0].gameObject.SetActive(true);
         }
-        if (imageIndex == 2 && !isReload)
+        if (imageIndex == 2)
         {
             Pins[1].gameObject.SetActive(true);
         }
-        if (imageIndex == 3 && !isReload)
+        if (imageIndex == 3)
         {
             Pins[2].gameObject.SetActive(true);
+        }
+        if(imageIndex == 4)
+        {
+            Pins[3].gameObject.SetActive(true);
         }
     }
 
@@ -248,31 +254,37 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void RollCoolTime()
+    {
+        rollSkill_Image.DOFillAmount(1f, 0.8f).OnComplete(() =>
+        {
+            canRoll = true;
+        });
+    }
+
 
     public void ComboBarBounceDown() // 지속적으로 콤보바의 수치를 낮춰줄 함수
     {
-        float newHeight = (int)(comboBarImage.rectTransform.sizeDelta.y - 0.1f);
-        comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
+        if(comboBarImage.fillAmount >= 0.25f)
+        {
+            comboBarImage.fillAmount -= 0.002f;
+        }
     }
 
-    public void ComboBarDown(int downNumber) // 판정에 실패할 시 게이지를 낮춤
+    public void ComboBarDown() // 판정에 실패할 시 게이지를 낮춤
     {
-        float newHeight = comboBarImage.rectTransform.sizeDelta.y - downNumber;
-        comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
+        comboBarImage.fillAmount -= 0.005f;
     }
 
     public void ComboBarBounceUp() // 옳은 판정 시에 콤보바 게이지의 높이를 올리는 함수
     {
-        float currentHeight = comboBarImage.rectTransform.sizeDelta.y;
-        float newHeight = currentHeight + 40; // 높이를 더함
-
-        if (newHeight < 600)
+        if (comboBarImage.fillAmount < 0.75f)
         {
-            comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, newHeight);
+            comboBarImage.fillAmount += 0.1f;
         }
-        else if (newHeight >= 600)
+        else if (comboBarImage.fillAmount >= 0.75f)
         {
-            comboBarImage.rectTransform.sizeDelta = new Vector2(comboBarImage.rectTransform.sizeDelta.x, 600);
+            comboBarImage.fillAmount = 0.75f;
             StartCoroutine(ActivateFeverMode());
 
             player = FindObjectOfType<Player>();
@@ -286,9 +298,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator ActivateFeverMode()
     {
         isFever = true;
-        Pins[0].gameObject.SetActive(true);
-        Pins[1].gameObject.SetActive(true);
-        Pins[2].gameObject.SetActive(true);
+        ActivateImage(4);
         foreach (var rhythmImage in rhythmImages)
         {
             Destroy(rhythmImage.gameObject);
@@ -305,8 +315,8 @@ public class GameManager : MonoBehaviour
     }
     public void SubFever()
     {
-        ComboBarDown(500);
-        player = FindObjectOfType<Player>();
+        comboBarImage.fillAmount = 0.25f;
+       player = FindObjectOfType<Player>();
         if (player != null)
         {
             player.FeverOff();
@@ -330,16 +340,7 @@ public class GameManager : MonoBehaviour
 
     private void ShowBulletCount()
     {
-        // #. 재장 전 중일 때 표시할 거
-        if (isReload)
-        {
-            cruBulletCount.text = "X";
-        }
-        else
-        {
-            // #. 장전 중이 아닐 때는 최대 탄창의 수를 표시
-            cruBulletCount.text = bulletCount.ToString() + " / 10";
-        }
+        cruBulletCount.text = bulletCount.ToString();
 
         if (isFever)
         {

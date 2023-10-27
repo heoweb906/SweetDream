@@ -53,6 +53,7 @@ public class Monster : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            gameObject.layer = LayerMask.NameToLayer("MonsterDie");
             Invoke("Die", 3.0f);
         }
 
@@ -69,11 +70,7 @@ public class Monster : MonoBehaviour
     private void Die()
     {
         stagemanager.MonsterCount--;
-
         FixPosition(transform.position); // 현재 위치로 고정
-
-        
-
         Destroy(gameObject);
     }
 

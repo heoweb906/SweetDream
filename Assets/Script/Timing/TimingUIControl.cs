@@ -224,7 +224,6 @@ public class TimingUIControl : MonoBehaviour
         gameManager.bulletCount = 10; // 게임 첫 시작시의 총알
         gameManager.soundManager.Play();
         gameManager.GameStart();
-        gameManager.isReload = false;
         playerInformation.IsMenu = false;
         playerInformation.IsGame = true;
 
@@ -234,7 +233,7 @@ public class TimingUIControl : MonoBehaviour
         }
 
         gameManager.ActivateImage(playerInformation.WeponColor); // 무기 정보에 맞게 바늘 UI 업데이트
-        gameManager.ActivateHpImage(3); // 체력바 활성화
+        gameManager.ActivateHpImage(4); // 체력바 활성화
         gameManager.SetVolume(); // 슬라이더 작업에서 하는 거지만 혹시 모르니까... 
 
         SceneManager.LoadScene("Lobby");
