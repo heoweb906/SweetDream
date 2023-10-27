@@ -246,7 +246,7 @@ public class Player : MonoBehaviour
         }
 
         // 구르기 체크
-        if (shiftDown && !isRolling && gameManager.rhythmCorrect && gameManager.canRoll)
+        if (shiftDown && !isRolling && gameManager.rhythmCorrect && gameManager.canRoll && gameManager.b_ActionCnt)
         {
             isRolling = true;
             StartCoroutine(PerformRoll());
@@ -255,6 +255,9 @@ public class Player : MonoBehaviour
 
     private IEnumerator PerformRoll()
     {
+        gameManager.b_ActionCnt = false;
+        StartCoroutine(SetBoolAfterDelay(0.2f));
+
         gameManager.canRoll = false;
         gameManager.rollSkill_Image.fillAmount = 0f;
         gameManager.RollCoolTime();
@@ -283,18 +286,27 @@ public class Player : MonoBehaviour
     }
 
 
+    private IEnumerator SetBoolAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gameManager.b_ActionCnt = true;
+    }
+
     private void Attack()
     {
-        if (Input.GetButtonDown("Fire1") && gameManager.rhythmCorrect && !isDie)
+        if (Input.GetButtonDown("Fire1") && gameManager.rhythmCorrect && !isDie && gameManager.b_ActionCnt)
         {
             if (gameManager.bulletCount > 0)
             {
-                Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
+                Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward );
                 RaycastHit hit;
                 bool hasHit = Physics.Raycast(ray, out hit, attackRange);
 
                 Debug.DrawRay(ray.origin, ray.direction * attackRange, hasHit ? Color.red : Color.green, 0.1f); // 레이 시각화
                 gameManager.bulletCount--;
+
+                gameManager.b_ActionCnt = false;
+                StartCoroutine(SetBoolAfterDelay(0.2f));
 
                 if (hasHit && (hit.collider.CompareTag("Monster") || hit.collider.CompareTag("Boss")))
                 {
@@ -366,8 +378,11 @@ public class Player : MonoBehaviour
     // #. 재장전 기능
     private void Reload()
     {
-        if (rDown && gameManager.rhythmCorrect)
+        if (rDown && gameManager.rhythmCorrect && gameManager.b_ActionCnt)
         {
+            gameManager.b_ActionCnt = false;
+            StartCoroutine(SetBoolAfterDelay(0.2f));
+
             gameManager.bulletCount = 10;
             soundReload_Out.Play();
         }
@@ -476,7 +491,7 @@ public class Player : MonoBehaviour
 
     public void WeaponChange(int number) 
     {
-        if (gameManager.rhythmCorrect)
+        if (gameManager.rhythmCorrect && gameManager.b_ActionCnt)
         {
             if (number == 1)
             {
@@ -502,6 +517,9 @@ public class Player : MonoBehaviour
                 weapon2.SetActive(false);
                 weapon3.SetActive(true);
             }
+
+            gameManager.b_ActionCnt = false;
+            StartCoroutine(SetBoolAfterDelay(0.2f));
 
             gameManager.ActivateImage(number);
             soundReload_In.Play();

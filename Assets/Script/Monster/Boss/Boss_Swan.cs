@@ -10,15 +10,9 @@ using UnityEngine.UI;
 
 // #. 기억!!!
 
-
-
 //
 // 보스 포인트 0에서 체력이 1/8로 깎여 색을 변경할 때 오류가 남
 //
-
-
-
-
 
 
 // 보스는 이동할 때를 제외하면 플레이어를 바라보지 않음, 6개의 각 포인트에 위치할 때 바라보는 각도를 수정해줘야 함
@@ -148,19 +142,16 @@ public class Boss_Swan : MonoBehaviour
         isBossStart = true;
     }
 
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
             ChangeMaterial(0);
         }
-
         if (Input.GetKeyDown(KeyCode.O))
         {
             ChangeMaterial(1);
         }
-
         if (Input.GetKeyDown(KeyCode.P))
         {
             ChangeMaterial(2);
@@ -229,7 +220,6 @@ public class Boss_Swan : MonoBehaviour
     private void PatternOff()
     {
         isPattern = false;
-        currentCoroutine = null;
     }
 
 
@@ -563,6 +553,10 @@ public class Boss_Swan : MonoBehaviour
     // #. 돌진 함수
     private void RushBoss()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine); // 이미 실행 중인 코루틴을 중지합니다.
+        }
         currentCoroutine = StartCoroutine(RushBoss_());
     }
     private IEnumerator RushBoss_()
@@ -630,6 +624,10 @@ public class Boss_Swan : MonoBehaviour
     // #. 제자리 돌아가기 함수
     private void BackNestBoss()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine); // 이미 실행 중인 코루틴을 중지합니다.
+        }
         currentCoroutine = StartCoroutine(BackNestBoss_());
     }
     private IEnumerator BackNestBoss_()
@@ -710,6 +708,10 @@ public class Boss_Swan : MonoBehaviour
     // #. 모빌 떨어뜨리기 공격 - 1
     private void ShootMobile()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine); // 이미 실행 중인 코루틴을 중지합니다.
+        }
         currentCoroutine = StartCoroutine(ShootMobile_());
     }
     private IEnumerator ShootMobile_()
@@ -743,6 +745,10 @@ public class Boss_Swan : MonoBehaviour
     // #. 즉사기 패턴 - 2
     private void ShootDiePlate()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine); // 이미 실행 중인 코루틴을 중지합니다.
+        }
         currentCoroutine = StartCoroutine(SpawnDiePlate());
     }
     private IEnumerator SpawnDiePlate()
@@ -782,6 +788,10 @@ public class Boss_Swan : MonoBehaviour
     // #. 유도탄 공격 - 3
     private void ShootColorBullet()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine); // 이미 실행 중인 코루틴을 중지합니다.
+        }
         currentCoroutine = StartCoroutine(ShootColorBullet_());
     }
     private IEnumerator ShootColorBullet_()
@@ -816,6 +826,10 @@ public class Boss_Swan : MonoBehaviour
     // #. 가시 장판 공격 - 4
     private void ShootThorn()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine); // 이미 실행 중인 코루틴을 중지합니다.
+        }
         // 진짜 가시를 생성하는 코루틴 호출
         currentCoroutine = StartCoroutine(SpawnThorns());
     }

@@ -1247,7 +1247,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7abb01e9837b01f498f63bdbd916db48, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 81bd0d532e309aa459b01a3a43ff01ab, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.2
   m_Pitch: 1
@@ -1805,7 +1805,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7abb01e9837b01f498f63bdbd916db48, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 81bd0d532e309aa459b01a3a43ff01ab, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
   m_Pitch: 1
@@ -4295,20 +4295,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   rhythmCorrect: 0
-  isReload: 0
   bulletCount: 0
   cruBulletCount: {fileID: 685116306}
   canvas: {fileID: 2056709215}
   playerInformation: {fileID: 0}
   Pins:
-  - {fileID: 1742811392}
-  - {fileID: 27679613}
-  - {fileID: 225194214}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   HpBars:
   - {fileID: 2113442027}
   - {fileID: 1031743187}
   - {fileID: 1875691292}
   - {fileID: 2035977220}
+  HpBars_Hit: []
   bpmCount: 0
   iconOn: 0
   soundManager: {fileID: 592087152}
@@ -4323,9 +4323,12 @@ MonoBehaviour:
   iconDestroydeay: 1.2
   iconSpeed: 1
   iconFadeDuration: 1
+  b_ActionCnt: 0
   isFever: 0
   initialHeight: 0
   comboBarImage: {fileID: 1755694621}
+  canRoll: 1
+  rollSkill_Image: {fileID: 0}
 --- !u!4 &1676908294
 Transform:
   m_ObjectHideFlags: 0

@@ -392,7 +392,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 0.9433962, g: 0.8232467, b: 0.86427337, a: 1}
-  m_Intensity: 1.71
+  m_Intensity: 1.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -947,7 +947,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7abb01e9837b01f498f63bdbd916db48, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 81bd0d532e309aa459b01a3a43ff01ab, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.3
   m_Pitch: 1
@@ -1450,7 +1450,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 366000717}
-  m_LocalRotation: {x: -0.14418387, y: -0.59386796, z: 0.10910492, w: -0.7839821}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -33.3, y: 2.92, z: -66.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1458,7 +1458,7 @@ Transform:
   - {fileID: 786762208}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &366000720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4155,6 +4155,7 @@ MonoBehaviour:
   iconDestroydeay: 1.2
   iconSpeed: 1
   iconFadeDuration: 1
+  b_ActionCnt: 1
   isFever: 0
   initialHeight: 0
   comboBarImage: {fileID: 1381905600}
@@ -4529,7 +4530,7 @@ GameObject:
   - component: {fileID: 919128133}
   - component: {fileID: 919128132}
   m_Layer: 5
-  m_Name: BulletCount_Assist
+  m_Name: BulletCount_Assist_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4705,7 +4706,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 95e0bc6c498cc2045a8856f461c69185, type: 2}
+  - {fileID: 2100000, guid: 5dc92b5f1e889e44e8e7ef2be468cbeb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5067,7 +5068,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.14418387, y: -0.59386796, z: 0.10910492, w: -0.7839821}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -33.3, y: 2.92, z: -66.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7261,7 +7262,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 72066839dac022241af3df90ac875c0a, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 81bd0d532e309aa459b01a3a43ff01ab, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.2
   m_Pitch: 1
@@ -8896,7 +8897,7 @@ GameObject:
   - component: {fileID: 1818576523}
   - component: {fileID: 1818576524}
   m_Layer: 5
-  m_Name: BulletCount
+  m_Name: BulletCount_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -45,6 +45,9 @@ public class GameManager : MonoBehaviour
     public float iconSpeed = 1.0f; 
     public float iconFadeDuration = 1f; // 페이드 인(서서히 나타나기) 시간
 
+    // #. 한번에 하나의 액션만 취할 수 있도록.
+    public bool b_ActionCnt;
+
 
     private List<Image> rhythmImages = new List<Image>();
     [Space(10f)]
