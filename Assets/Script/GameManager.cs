@@ -57,6 +57,10 @@ public class GameManager : MonoBehaviour
     public bool isFever;
     public float initialHeight = 600; // 콤보바 초기 높이
     public Image comboBarImage;
+
+    public TMP_Text text_ComboGauge;
+
+
     [Space(10f)]
 
     [Header("구르기")]
@@ -89,6 +93,7 @@ public class GameManager : MonoBehaviour
 
     public void GameStart()
     {
+        comboBarImage.fillAmount = 0.25f;
         Invoke("SetStartGame", playerInformation.Jugde * 0.01f + 1.5f);  // 이걸로 판정을 맞출 거임
                                                                          // 1.5초는 최초 딜레이
     }
@@ -102,6 +107,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         ShowBulletCount();
+        ShowComboGauge();
         //if (playerInformation.IsGame)
         //{
             
@@ -276,7 +282,11 @@ public class GameManager : MonoBehaviour
 
     public void ComboBarDown() // 판정에 실패할 시 게이지를 낮춤
     {
-        comboBarImage.fillAmount -= 0.005f;
+        if(comboBarImage.fillAmount > 0.25f)
+        {
+            comboBarImage.fillAmount -= 0.005f;
+        }
+        
     }
 
     public void ComboBarBounceUp() // 옳은 판정 시에 콤보바 게이지의 높이를 올리는 함수
@@ -350,4 +360,16 @@ public class GameManager : MonoBehaviour
             cruBulletCount.text = "XXX";
         }
     }
+
+    private void ShowComboGauge()
+    {
+        int fillPercent = (int)Percent(comboBarImage.fillAmount, 0.25f, 0.75f, 0f, 100f);
+
+        text_ComboGauge.text = fillPercent.ToString() + "%";
+    }
+    float Percent(float value, float inMin, float inMax, float outMin, float outMax)
+    {
+        return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    }
+
 }
